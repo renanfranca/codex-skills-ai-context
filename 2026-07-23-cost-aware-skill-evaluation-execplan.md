@@ -103,6 +103,7 @@ After GREEN, run the post implementation design review, inspect the candidate pa
 - [x] Reviewed candidate promoted without unrelated changes; canonical skill bytes match the isolated candidate except ignored caches.
 - [x] Canonical deterministic gates completed: 29 unit tests, structural validation, both schemas, public plan schema validation, deterministic progress case, and diff checks passed.
 - [x] Final results, residual risks, and lessons recorded.
+- [x] User documentation feedback addressed: the complete mental model, suite structure, execution flow, command controls, example, troubleshooting, and design guidance were restored and adapted to the proportional policy.
 
 ## Decisions
 
@@ -125,6 +126,8 @@ After GREEN, run the post implementation design review, inspect the candidate pa
 - 2026-07-23, Codex: Proposed validation commands use the currently executing runner, not a nonexistent runner under the target skill.
 - 2026-07-23, User: Approve the cumulative additional sessions needed after the diagnosed `INCONCLUSIVE` and `INVALID_RED` bootstrap attempts, plus one fresh-agent session.
 - 2026-07-23, Codex: Promote only the byte-equivalent reviewed candidate files and candidate root documentation; exclude caches, retained blocking artifacts, and temporary fresh-agent fixtures.
+- 2026-07-23, User: Restore the complete evaluation guide rather than retaining the compressed technical reference.
+- 2026-07-23, User: Keep the restored guide in one `EVALUATIONS.md` with a navigable structure instead of splitting it into subfiles.
 
 ## Risks and Mitigations
 
@@ -191,3 +194,4 @@ Before promotion, recovery is abandoning the candidate. After promotion, recover
 - The fresh agent independently used the candidate planning workflow, selected only `status-stream`, reported zero executor and judge sessions, and required no approval. It also correctly warned that the placeholder case must assert stdout, stderr, and exit code before real validation.
 - The completed bootstrap used 12 established nested model sessions across three diagnosed attempts, within the user's revised cumulative approvals, plus one fresh-agent session. The earlier sandbox attempt failed before a model session initialized.
 - Canonical validation confirmed no generated responses, retained artifacts, or temporary absolute paths leaked into versioned skill or guide files.
+- Compressing a guide around new commands can remove the conceptual path that makes those commands understandable. Cost controls, case contracts, and execution phases need the mental model and suite structure beside them, even when that makes the root guide longer.
