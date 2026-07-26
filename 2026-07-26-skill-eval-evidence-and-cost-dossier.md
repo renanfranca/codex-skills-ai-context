@@ -154,6 +154,16 @@ As mesmas páginas informavam multiplicadores para requests acima de 272.000 inp
 
 O material persistido exclui `.git/**`, `.agents/skills/**`, `.eval-*`, `**/__pycache__/**` e `*.pyc`. Também aplica limites determinísticos por arquivo e relatório, marca truncamentos e redige formatos comuns de API key, bearer token, password, secret e access token.
 
+### Documentação pública
+
+A documentação pública do repositório foi alinhada depois da promoção:
+
+- `EVALUATIONS.md` documenta o contrato de persistência, a segurança do relatório canônico, eventos normalizados, long context, limitações de pricing, renderer, comparador, flags e política econômica durável;
+- `CODEX_CLI.md` oferece comandos copiáveis para evidência persistente, pricing datado, replay de Markdown, comparação sem nova sessão, mudanças scoped com Luna `medium` e promoções amplas excepcionais com Sol executor e Terra judge;
+- `README.md` mantém apenas um resumo curto e links para as referências detalhadas.
+
+Essa atualização foi classificada como `static` e usa somente validação determinística. A auditoria histórica completa permanece neste dossiê; os documentos públicos contêm apenas comportamento suportado e política operacional durável.
+
 ## Cronologia auditável
 
 1. O commit canônico, a árvore da skill, a versão da CLI, a autenticação e o estado do worktree foram registrados.
@@ -176,6 +186,7 @@ O material persistido exclui `.git/**`, `.agents/skills/**`, `.eval-*`, `**/__py
 18. Um fresh agent recebeu somente uma tarefa realista e o caminho do candidate. A avaliação externa usou uma sessão do fresh agent; dentro dela, o runner usou fake Codex e telemetria de fixture. O relatório foi `PASS`, sanitizado, verificável e reproduzível.
 19. O patch revisado foi aplicado arquivo por arquivo ao source canônico. Todos os 58 testes, a validação estrutural, os schemas e `git diff --check` passaram.
 20. O default global permaneceu Sol `medium`. A recomendação econômica passou a ser seleção explícita por operação.
+21. `README.md`, `EVALUATIONS.md` e `CODEX_CLI.md` foram alinhados com as interfaces promovidas e a política econômica, sem sessão de modelo, mudança de `config.toml`, commit ou push.
 
 ## Contabilidade consolidada
 
@@ -554,6 +565,9 @@ Foram verificados:
 - os hashes dos inventários, pricing, planos, aprovações, comparação e scripts promovidos;
 - a versão da CLI e a autenticação sanitizada;
 - a configuração global, apenas por leitura;
+- as opções públicas contra o `--help` dos seis subcomandos do runner, do renderer e do comparador;
+- os links e anchors Markdown, os nomes de campos contra schema e implementação e a ausência de valores com formato de credencial;
+- os 58 testes determinísticos, `quick_validate.py` e `git diff --check`;
 - a ausência deliberada de respostas completas, JSONL, transcrições, private reasoning, credenciais e oracles ocultos.
 
-Nenhum commit, push, nova sessão de modelo ou alteração de runtime faz parte desta consolidação documental.
+Nenhum commit, push, nova sessão de modelo, relatório gerado, pricing artifact ou alteração de `config.toml` faz parte desta consolidação documental.

@@ -247,6 +247,39 @@ Promote only a reviewed, byte equivalent patch after one approved cross cutting 
 - Fresh agent produces and inspects a report without leaked expected answers.
 - Canonical patch is byte equivalent, contains no generated reports or model outputs, and leaves runtime defaults unchanged.
 
+### Milestone 6: Align public evaluation documentation
+
+#### Goal
+
+Make the repository's public evaluation reference and cookbook match the promoted evidence, telemetry, pricing, rendering, comparison, and economic runtime interfaces without invoking a model or changing runtime configuration.
+
+#### Changes
+
+- Update `/home/renanfranca/.codex/skills/EVALUATIONS.md` as the normative public reference for durable reports, normalized usage, pricing limitations, deterministic replay and comparison, blocking statuses, and economic runtime selection.
+- Update `/home/renanfranca/.codex/skills/CODEX_CLI.md` with copyable persisted evidence, dated pricing, renderer, comparator, Luna scoped, and exceptional Sol plus Terra promotion commands.
+- Keep `/home/renanfranca/.codex/skills/README.md` concise and link to the detailed sections instead of copying this historical audit.
+- Update the final audit dossier to record that repository documentation now exposes the supported behavior and durable policy.
+
+#### Validation
+
+- Command: `python3 develop-skill-with-evals/scripts/run_skill_evals.py --help` plus `--help` for each subcommand.
+- Expected result: documented runner commands and options match the live CLI.
+- Command: `python3 develop-skill-with-evals/scripts/render_eval_report.py --help`
+- Expected result: the documented renderer requires `--input` and `--output`.
+- Command: `python3 develop-skill-with-evals/scripts/compare_model_reports.py --help`
+- Expected result: the documented comparator requires `--reports` and `--output-dir`.
+- Command: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s develop-skill-with-evals/scripts/tests -v`
+- Expected result: the deterministic suite passes with zero model sessions.
+- Command: `python3 .system/skill-creator/scripts/quick_validate.py ./develop-skill-with-evals`
+- Expected result: the skill remains structurally valid.
+- Command: `git diff --check`
+- Expected result: no whitespace errors.
+
+#### Acceptance Criteria
+
+- Public documentation contains only supported behavior and durable operational policy, while this context repository remains the complete historical record.
+- No model session, commit, push, `config.toml` change, generated report, pricing artifact, raw JSONL, transcript, credential, or hidden oracle is introduced.
+
 ## Progress
 
 - [x] ExecPlan created.
@@ -271,6 +304,9 @@ Promote only a reviewed, byte equivalent patch after one approved cross cutting 
 - [x] Reviewed patch promoted byte for byte.
 - [x] Runtime recommendation recorded without automatic runtime change.
 - [x] Final audit dossier written, reconciled, and linked.
+- [x] Public documentation milestone reopened and classified as `static`.
+- [x] Public evaluation reference and cookbook aligned with the promoted interfaces.
+- [x] Documentation milestone validated and closed with zero model sessions.
 
 ## Decisions
 
@@ -318,6 +354,10 @@ Promote only a reviewed, byte equivalent patch after one approved cross cutting 
   Rationale: The correction changes the candidate source fingerprint. Reusing observations from the prior fingerprint would violate the promotion contract even though the failure itself was deterministic.
   Date/Author: 2026-07-26 / Codex
 
+- Decision: Classify the public documentation alignment as `static`.
+  Rationale: It changes only root documentation and historical context records; it cannot affect skill selection, runner behavior, schemas, serialization, or evaluation outcomes, so structural gates consume zero model sessions.
+  Date/Author: 2026-07-26 / Codex
+
 ## Risks and Mitigations
 
 - Risk: API estimates could be mistaken for ChatGPT billing.
@@ -346,6 +386,9 @@ Promote only a reviewed, byte equivalent patch after one approved cross cutting 
 
 - Risk: Python imports can rewrite cache files inside an evaluated skill and create a false self modification failure.
   Mitigation: Exclude `__pycache__` and `*.pyc` consistently from workspace snapshots, source immutability checks, stability signatures, and persisted evidence while retaining checks for source files.
+
+- Risk: Public examples can drift from the live parser or imply that API reference estimates are observed ChatGPT charges.
+  Mitigation: Compare every documented option with all runner, renderer, and comparator `--help` output; state `actual_charge: false`, authentication limits, and the dated pricing requirement next to copyable commands.
 
 ## Validation Strategy
 
@@ -401,4 +444,5 @@ Generated reports, pricing snapshots, ledgers, and pilot comparisons remain outs
 - The reviewed patch was applied to the canonical skill for exactly 20 files. Candidate and canonical bytes match for every promoted file, executable modes match for the fixture helpers and hidden oracle, and preexisting canonical fixtures absent from the evaluated candidate were preserved. On canonical source, all 58 tests, structural validation, both JSON schemas, and `git diff --check` pass.
 - Runtime defaults remain unchanged. The directional recommendation remains to test Luna on a broader stable suite before any policy change; no model qualified in this pilot.
 - The historical `7,002,781 ms` duration total is reproducible only by mixing pilot observation duration with operation duration from the other phases. The final dossier preserves that historical figure, documents its exact formula, and also records homogeneous operation-level and observation-level totals.
+- Public documentation alignment remained a `static` change. All 58 deterministic tests passed in 9.052 seconds, `quick_validate.py` reported `Skill is valid!`, both worktrees passed `git diff --check`, every documented runner, renderer, and comparator option matched live `--help`, local Markdown targets and anchors resolved, field names matched schema and implementation, and no credential-shaped value was found. No model session, commit, push, generated report, pricing artifact, or `config.toml` change occurred.
 - Record during implementation which Codex JSONL usage fields are stable, how much structured explanation changes output tokens, whether report evidence supports future judge replay, and how model choice affects tokens, stability, duration, and effective reference cost.
