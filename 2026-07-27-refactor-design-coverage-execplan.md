@@ -179,6 +179,37 @@ Make `refactor-design` the running example inside the conceptual coverage sectio
 - The dated table remains the only detailed execution status source.
 - The eight new or modified semantic cases remain explicitly unqualified.
 
+### Milestone 7 - Audit the complete promoted suite
+
+#### Goal
+
+Observe the promoted `refactor-design` suite once at commit `673dfb98aefc470d7fac3b3c822d87e7e0f6fba4` and persist one canonical, non promotional report covering all twelve current cases.
+
+#### Changes
+
+- Revalidate the skill, deterministic coverage contract, Java fixture, and Codex runtime before consuming sessions.
+- Run all twelve cases from `git:HEAD` with `gpt-5.6-sol` at `medium` as executor and `gpt-5.6-terra` at `medium` as judge, within the explicitly authorized structural maximum of 22 sessions.
+- Rebuild and validate the permanent evaluation archive.
+- Update `EVALUATIONS.md` only if all twelve observations complete, preserving earlier reports as historical evidence and stating that observational `PASS` is not promotion evidence.
+
+#### Validation
+
+- Command: `python3 .system/skill-creator/scripts/quick_validate.py ./refactor-design`
+- Command: `python3 develop-skill-with-evals/scripts/run_skill_evals.py run --skill ./refactor-design --case coverage-contract --source git:HEAD`
+- Command: `python3 refactor-design/evals/cases/java-hexagonal-mapping/fixture/compile_and_test.py`
+- Command: `codex doctor --json`
+- Command: `python3 develop-skill-with-evals/scripts/run_skill_evals.py run --skill ./refactor-design --all --source git:HEAD --model gpt-5.6-sol --reasoning-effort medium --judge-model gpt-5.6-terra --judge-reasoning-effort medium --progress`
+- Command: `python3 develop-skill-with-evals/scripts/manage_evaluation_archive.py rebuild --archive evaluation-reports`
+- Command: `python3 develop-skill-with-evals/scripts/manage_evaluation_archive.py validate --archive evaluation-reports`
+- Expected result: twelve observations are present, actual sessions do not exceed eleven executor and eleven judge sessions, runtime and fingerprints are explicit, `promotion_eligible` is false, the canonical digest is valid, and archive projections are byte identical.
+
+#### Acceptance Criteria
+
+- The report records every case status, mechanical check, oracle and applicable judge verdict without raw JSONL, private reasoning, credentials, hidden oracle content, or generated transcript leakage.
+- Infrastructure failure stops the operation immediately and remains disclosed as incomplete evidence.
+- No skill, case, fixture, coverage manifest, runtime contract, or global configuration changes.
+- No files are staged, committed, pushed, or published.
+
 ## Progress
 
 - [x] Baseline preserved.
@@ -194,6 +225,8 @@ Make `refactor-design` the running example inside the conceptual coverage sectio
 - [x] Milestone 5 completed.
 - [x] Milestone 6 started.
 - [x] Milestone 6 completed.
+- [x] Milestone 7 started.
+- [x] Milestone 7 completed.
 
 ## Decisions
 
@@ -225,6 +258,22 @@ Make `refactor-design` the running example inside the conceptual coverage sectio
   Rationale: A concrete example makes the layers understandable at first reading, while a single detailed status table avoids competing sources of execution truth.
   Date/Author: 2026-07-27 / Codex
 
+- Decision: Evaluate immutable `git:HEAD` at `673dfb98aefc470d7fac3b3c822d87e7e0f6fba4` rather than the working tree.
+  Rationale: The audit must exclude unrelated tracked edits, untracked files, and any source changes made after authorization.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Treat the complete suite run as observational evidence with `promotion_eligible: false`.
+  Rationale: One observation per semantic case measures the promoted state but does not satisfy RED, three stable GREEN repetitions, or proportional promotion gates.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Record the full audit as `FAIL` with two blocking semantic cases while retaining the other ten case results.
+  Rationale: All twelve observations completed without infrastructure failure, so the report is integral, but `rubric-boundary-calibration` and `rubric-cohesion-calibration` failed their judges and must not be softened into an incomplete or successful audit.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Preserve the canonical report despite identifying an inaccurate mixed runtime API reference estimate.
+  Rationale: The report schema, digest, pricing snapshot, projection, and archive validation are valid, but the current runner applies the executor model rate to aggregate executor and judge usage. Manually editing generated evidence would invalidate its digest, and changing runner pricing behavior is outside this milestone's explicit scope.
+  Date/Author: 2026-07-27 / Codex
+
 ## Risks and Mitigations
 
 - Risk: A manifest can give a false impression of universal semantic proof.
@@ -248,6 +297,18 @@ Make `refactor-design` the running example inside the conceptual coverage sectio
 - Risk: Repeating current execution details in two sections can let the documentation drift into contradictory states.
   Mitigation: Keep only a high level conclusion in the conceptual section and retain case level, dated results in `Example: evaluating refactor-design`.
 
+- Risk: The complete audit can consume at most 22 model sessions.
+  Mitigation: Use the previously authorized structural ceiling, confirm the suite has one deterministic and eleven judged semantic cases, run preflight at the same permission boundary, and never retry an unchanged infrastructure or contract failure.
+
+- Risk: `HEAD` or evaluated case inputs can change after authorization.
+  Mitigation: Verify `HEAD`, the clean `refactor-design` diff, and report source fingerprints immediately before the run; stop if they differ.
+
+- Risk: An observational PASS can be mistaken for promotion.
+  Mitigation: Require `promotion_eligible: false` in the canonical report and repeat the distinction in the dated documentation state.
+
+- Risk: Aggregate pricing for a mixed executor and judge runtime can use the wrong model rate.
+  Mitigation: Treat the persisted amount as structurally valid but semantically unreliable, disclose the limitation, and defer a role aware pricing correction to a separately authorized runner change with deterministic tests.
+
 ## Validation Strategy
 
 1. Exercise the checker directly and through the zero-session runner case.
@@ -270,3 +331,9 @@ The change is repository local and has no deployment step. Recovery is a normal 
 - Five sessions were recorded cumulatively: one failed infrastructure invocation and two executor/judge pairs for the invalid negative observations.
 - Conceptual prose without a verifiable execution state left normative completeness open to being read as semantic approval. A dated evidence table makes the boundary inspectable without weakening the coverage contract.
 - Separating the generic framework from its concrete example made the reader reconstruct their relationship across distant sections. A running example is needed at the point where each abstraction is introduced.
+- The complete audit consumed the authorized maximum of 22 sessions: eleven Sol `medium` executors and eleven Terra `medium` judges. It produced twelve observations, ten `PASS` results and two contract `FAIL` results, with no infrastructure failure.
+- `rubric-boundary-calibration` passed all mechanical checks but failed because the response corrected only the enum mapping and omitted required analysis of the remaining representation risks and the paused public contract decision.
+- `rubric-cohesion-calibration` passed all mechanical checks but failed because the response addressed the main cohesion risks while also rewriting the direct lookup that the case intentionally defines as a false positive.
+- A complete observational report can be useful even when it fails, but its `promotion_eligible: false` field must remain prominent because one observation per case cannot replace RED, stable GREEN repetitions, and proportional regression evidence.
+- Archive validation checks pricing shape and projection consistency but does not detect mixed runtime attribution. The report records `$3.448071` by applying Sol rates to aggregate usage; a diagnostic role split using the same dated snapshot yields `$2.660973` for executor usage and `$0.393549` for judge usage, or `$3.054522` total. This derived correction is not written into canonical evidence.
+- A concurrent `restructure-documentation` report appeared before archive rebuilding. Rebuild correctly incorporated it into the shared manifests. It belongs to separate work and was preserved rather than removed or edited.
