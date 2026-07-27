@@ -131,6 +131,30 @@ Run structural checks, validate archive projections, and determine whether the p
 - [ ] Deterministic evidence is stable.
 - [ ] Final report distinguishes executed evidence from planned or blocked evidence.
 
+### Milestone 5 - Clarify coverage and execution status
+
+#### Goal
+
+Make the evaluation guidance distinguish declared coverage, mechanical integrity, executed semantic evidence, and rubric sampling, then record the observed `refactor-design` execution state without implying that unexecuted cases passed.
+
+#### Changes
+
+- [x] Replace the conceptual coverage prose in `EVALUATIONS.md` with a compact guarantee and evidence table.
+- [x] State how `complete` and `partial` differ from execution statuses and how representative rubric coverage affects case design but not required suite execution.
+- [x] Add a dated `refactor-design` state table linked only to durable repository evidence.
+
+#### Validation
+
+- [x] Command: `git diff --check`
+- [x] Command: `git diff -- EVALUATIONS.md _temporary/codex-skills-ai-context/2026-07-27-refactor-design-coverage-execplan.md`
+- [x] Expected result: no whitespace errors; the diff does not claim that the eight new or modified semantic cases passed and the new state table contains no ephemeral `/tmp` links.
+
+#### Acceptance Criteria
+
+- [x] No coverage declaration is presented as execution evidence.
+- [x] Links resolve to `coverage.json`, `suite.json`, and the archived six case report.
+- [x] Future semantic results can update the state table without rewriting the conceptual explanation.
+
 ## Progress
 
 - [x] Baseline preserved.
@@ -142,6 +166,8 @@ Run structural checks, validate archive projections, and determine whether the p
 - [x] Milestone 3 completed.
 - [x] Milestone 4 started.
 - [x] Milestone 4 completed.
+- [x] Milestone 5 started.
+- [x] Milestone 5 completed.
 
 ## Decisions
 
@@ -165,6 +191,10 @@ Run structural checks, validate archive projections, and determine whether the p
   Rationale: Sol independently corrected the concrete code smell despite deliberately weakened instructions. Further prompt manipulation would make the control artificial, consume more sessions, and would not provide trustworthy RED evidence.
   Date/Author: 2026-07-27 / Codex
 
+- Decision: Separate coverage declarations from execution results in both the conceptual guidance and the dated example.
+  Rationale: `complete` and `partial` describe the reach claimed by manifest mappings, while `PASS`, `FAIL`, and other runner statuses describe observed executions. Combining them makes an unexecuted semantic contract look qualified.
+  Date/Author: 2026-07-27 / Codex
+
 ## Risks and Mitigations
 
 - Risk: A manifest can give a false impression of universal semantic proof.
@@ -181,6 +211,9 @@ Run structural checks, validate archive projections, and determine whether the p
 
 - Risk: Existing untracked files belong to the user.
   Mitigation: Do not modify or delete `_temporary/` or Python caches and scope validation to intended paths.
+
+- Risk: Readers may interpret `complete` as semantically approved.
+  Mitigation: Define it as a declared coverage level, place execution in a separate evidence row, and require applicable gates to execute and pass before semantic qualification.
 
 ## Validation Strategy
 
@@ -202,3 +235,4 @@ The change is repository local and has no deployment step. Recovery is a normal 
 - The first external execution failed before model output because the outer sandbox made app-server initialization read only. The escalated boundary resolved that infrastructure issue.
 - The negative control passed `hidden-invocation-state` twice. The second pass occurred after adding a protected unrelated risk, removing the explicit scope hint, adding a structural oracle, and making the negative instruction directly oppose invocation-local state. This demonstrates that degraded instructions are not a reliable semantic RED for a sufficiently obvious fixture.
 - Five sessions were recorded cumulatively: one failed infrastructure invocation and two executor/judge pairs for the invalid negative observations.
+- Conceptual prose without a verifiable execution state left normative completeness open to being read as semantic approval. A dated evidence table makes the boundary inspectable without weakening the coverage contract.
