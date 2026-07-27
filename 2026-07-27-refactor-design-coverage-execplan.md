@@ -155,6 +155,30 @@ Make the evaluation guidance distinguish declared coverage, mechanical integrity
 - [x] Links resolve to `coverage.json`, `suite.json`, and the archived six case report.
 - [x] Future semantic results can update the state table without rewriting the conceptual explanation.
 
+### Milestone 6 - Ground coverage guidance in `refactor-design`
+
+#### Goal
+
+Make `refactor-design` the running example inside the conceptual coverage section so a reader can connect each evidence layer to the real suite before reaching the later detailed status table.
+
+#### Changes
+
+- Name `refactor-design` in the section introduction.
+- Give every conceptual table row a concrete `refactor-design` application.
+- End with the current high level conclusion and direct readers to the dated example for detailed execution state.
+
+#### Validation
+
+- Command: `git diff --check`
+- Command: `git diff -- EVALUATIONS.md _temporary/codex-skills-ai-context/2026-07-27-refactor-design-coverage-execplan.md`
+- Expected result: `refactor-design` appears in the introduction, every table row, and the conclusion without presenting declared coverage as semantic qualification.
+
+#### Acceptance Criteria
+
+- The conceptual section is understandable without first reading the later example.
+- The dated table remains the only detailed execution status source.
+- The eight new or modified semantic cases remain explicitly unqualified.
+
 ## Progress
 
 - [x] Baseline preserved.
@@ -168,6 +192,8 @@ Make the evaluation guidance distinguish declared coverage, mechanical integrity
 - [x] Milestone 4 completed.
 - [x] Milestone 5 started.
 - [x] Milestone 5 completed.
+- [x] Milestone 6 started.
+- [x] Milestone 6 completed.
 
 ## Decisions
 
@@ -195,6 +221,10 @@ Make the evaluation guidance distinguish declared coverage, mechanical integrity
   Rationale: `complete` and `partial` describe the reach claimed by manifest mappings, while `PASS`, `FAIL`, and other runner statuses describe observed executions. Combining them makes an unexecuted semantic contract look qualified.
   Date/Author: 2026-07-27 / Codex
 
+- Decision: Use `refactor-design` as the running example in the conceptual table while keeping detailed dated results in the later example.
+  Rationale: A concrete example makes the layers understandable at first reading, while a single detailed status table avoids competing sources of execution truth.
+  Date/Author: 2026-07-27 / Codex
+
 ## Risks and Mitigations
 
 - Risk: A manifest can give a false impression of universal semantic proof.
@@ -214,6 +244,9 @@ Make the evaluation guidance distinguish declared coverage, mechanical integrity
 
 - Risk: Readers may interpret `complete` as semantically approved.
   Mitigation: Define it as a declared coverage level, place execution in a separate evidence row, and require applicable gates to execute and pass before semantic qualification.
+
+- Risk: Repeating current execution details in two sections can let the documentation drift into contradictory states.
+  Mitigation: Keep only a high level conclusion in the conceptual section and retain case level, dated results in `Example: evaluating refactor-design`.
 
 ## Validation Strategy
 
@@ -236,3 +269,4 @@ The change is repository local and has no deployment step. Recovery is a normal 
 - The negative control passed `hidden-invocation-state` twice. The second pass occurred after adding a protected unrelated risk, removing the explicit scope hint, adding a structural oracle, and making the negative instruction directly oppose invocation-local state. This demonstrates that degraded instructions are not a reliable semantic RED for a sufficiently obvious fixture.
 - Five sessions were recorded cumulatively: one failed infrastructure invocation and two executor/judge pairs for the invalid negative observations.
 - Conceptual prose without a verifiable execution state left normative completeness open to being read as semantic approval. A dated evidence table makes the boundary inspectable without weakening the coverage contract.
+- Separating the generic framework from its concrete example made the reader reconstruct their relationship across distant sections. A running example is needed at the point where each abstraction is introduced.
