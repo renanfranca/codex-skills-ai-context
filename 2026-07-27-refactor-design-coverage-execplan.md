@@ -210,6 +210,48 @@ Observe the promoted `refactor-design` suite once at commit `673dfb98aefc470d7fa
 - No skill, case, fixture, coverage manifest, runtime contract, or global configuration changes.
 - No files are staged, committed, pushed, or published.
 
+### Milestone 8 - Correct and promote the failed calibrations
+
+#### Goal
+
+Correct the transferable review behavior and the public evaluation contracts exposed by the failed full-suite audit. Compare the revised skill against immutable commit `673dfb98aefc470d7fac3b3c822d87e7e0f6fba4` with identical corrected cases, then require valid RED, three stable GREEN observations, complete cross-cutting regression, and a fresh forward test before describing the skill as promoted.
+
+This milestone supersedes the earlier statement that `refactor-design/SKILL.md` and its general rubric are out of scope. Only the general review instructions, the two failed calibration cases, their public fixtures, `coverage.json`, this ExecPlan, and post-gate evaluation documentation are in scope. The skill description, public APIs, Java guidance, metadata, runner pricing behavior, unrelated working-tree changes, staging, commits, pushes, and publication remain out of scope.
+
+#### Changes
+
+- Add general instructions to classify every requested review dimension before editing, continue after the first finding, retain blocked findings as exception gates, distinguish stable public contracts from replaceable internal representations, and avoid extending a repeated-search consolidation to an independent lookup without concrete risk.
+- Add the same transferable calibration guidance to `references/design-review-rubric.md` without naming either fixture or prescribing one internal topology.
+- Give `rubric-boundary-calibration` enough public ownership and lifecycle context to support classification while keeping implementation choices open. Judge complete classification, stable contracts, false positives, and exception gates rather than one exact topology.
+- Protect `rubric-cohesion-calibration` with a public non-reflexive equality scenario, require explicit analysis of the independent lookup, and accept proportional alternatives that preserve identity, equality, and not-found behavior.
+- Refresh `coverage.json` source fingerprints after the behavior instructions change.
+- Update `EVALUATIONS.md` only after executed promotion evidence exists.
+
+#### Validation
+
+- Command: `python3 -m unittest discover -s refactor-design/evals/cases/rubric-boundary-calibration/fixture -q`
+- Command: `python3 -m unittest discover -s refactor-design/evals/cases/rubric-cohesion-calibration/fixture -q`
+- Command: `python3 .system/skill-creator/scripts/quick_validate.py ./refactor-design`
+- Command: run `coverage-contract` three times against the working candidate with zero model sessions.
+- Command: `git diff --check`
+- Expected result: all deterministic checks pass and no source or case fingerprint is stale.
+- Command after separate cost authorization and a healthy `codex doctor --json`: one focused baseline and candidate observation for each corrected case, using Sol `medium` as executor and Terra `medium` as judge, with reports and a shared campaign ledger under `/tmp`.
+- Expected result: both hybrid baselines are `FAIL`; both candidates are `PASS`; any other result stops the campaign without an unchanged retry.
+- Command after a successful pilot: one `cross-cutting` `validate-change` for both cases with a structural maximum of 34 sessions.
+- Expected result: `promotion_eligible: true`, overall `PASS`, three stable candidate signatures per affected case, and one passing observation for every other suite case.
+- Command after promotion: one fresh-agent forward test against a new generic artifact and prompt that disclose neither fixtures, judge criteria, prior failures, nor intended edits.
+- Expected result: the agent reviews every requested dimension, preserves public behavior, reports blocked contract changes as exception gates, and avoids unsupported refactors.
+- Command: rebuild and validate `evaluation-reports`, inspect sanitization, and run `git diff --check`.
+
+#### Acceptance Criteria
+
+- Both corrected cases have valid baseline RED and three stable candidate GREEN observations.
+- The other ten suite cases pass the cross-cutting regression phase.
+- The fresh forward test does not omit exception gates, widen scope, or refactor false positives.
+- Durable evidence contains explicit fingerprints, runtime, telemetry, mechanical checks, judges, oracles, and a valid digest.
+- Mixed-runtime aggregate pricing remains disclosed as unreliable; any role-specific calculation is reported separately and does not alter the runner in this milestone.
+- No promotion claim appears before every gate above passes.
+
 ## Progress
 
 - [x] Baseline preserved.
@@ -227,6 +269,13 @@ Observe the promoted `refactor-design` suite once at commit `673dfb98aefc470d7fa
 - [x] Milestone 6 completed.
 - [x] Milestone 7 started.
 - [x] Milestone 7 completed.
+- [x] Milestone 8 started.
+- [x] Milestone 8 implementation completed.
+- [x] Milestone 8 deterministic validation completed.
+- [x] Milestone 8 focused pilot completed with invalid RED; campaign stopped.
+- [ ] Milestone 8 promotion validation completed.
+- [ ] Milestone 8 forward test completed.
+- [ ] Milestone 8 completed.
 
 ## Decisions
 
@@ -274,6 +323,26 @@ Observe the promoted `refactor-design` suite once at commit `673dfb98aefc470d7fa
   Rationale: The report schema, digest, pricing snapshot, projection, and archive validation are valid, but the current runner applies the executor model rate to aggregate executor and judge usage. Manually editing generated evidence would invalidate its digest, and changing runner pricing behavior is outside this milestone's explicit scope.
   Date/Author: 2026-07-27 / Codex
 
+- Decision: Fix both the transferable review instructions and the fairness of the two failed cases.
+  Rationale: The boundary failure exposed premature review termination, while the cohesion failure exposed an underspecified equality contract and an overly topology-specific false-positive expectation. Changing only prompts or only instructions would leave one of those defects intact.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Use commit `673dfb98aefc470d7fac3b3c822d87e7e0f6fba4` as immutable behavior baseline and overlay only the corrected evaluation cases when constructing the hybrid baseline.
+  Rationale: RED must compare old and new instructions under one identical public evaluation contract; comparing against old cases would confound behavior and case changes.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Publish ownership and lifecycle facts in a boundary architecture fixture, and protect the independent route lookup with public equality and error scenarios.
+  Rationale: A semantic judge may assess only context available to the executor. Public facts make the boundary classification fair, while executable lookup scenarios protect semantics without revealing one expected implementation.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Stop the corrective campaign when the hybrid boundary baseline returned `PASS`.
+  Rationale: The approved pilot contract requires baseline `FAIL`; a baseline `PASS` is invalid RED and explicitly prohibits cohesion, promotion, forward testing, or an unchanged repeat. The runner had already started the candidate observation after printing the baseline result, so the process was interrupted immediately.
+  Date/Author: 2026-07-27 / Codex
+
+- Decision: Do not update `EVALUATIONS.md` from the interrupted pilot.
+  Rationale: The interrupted diagnostic did not persist a canonical report. Recording an ephemeral progress line as durable evaluation evidence would weaken the repository's evidence boundary.
+  Date/Author: 2026-07-27 / Codex
+
 ## Risks and Mitigations
 
 - Risk: A manifest can give a false impression of universal semantic proof.
@@ -309,6 +378,18 @@ Observe the promoted `refactor-design` suite once at commit `673dfb98aefc470d7fa
 - Risk: Aggregate pricing for a mixed executor and judge runtime can use the wrong model rate.
   Mitigation: Treat the persisted amount as structurally valid but semantically unreliable, disclose the limitation, and defer a role aware pricing correction to a separately authorized runner change with deterministic tests.
 
+- Risk: Judge criteria can reward one hidden implementation rather than observable design judgment.
+  Mitigation: State public ownership and lifecycle facts in the fixture, judge classifications and preserved contracts, and accept proportional implementations that satisfy the same semantics.
+
+- Risk: A helper for repeated searches can accidentally change an independent lookup's identity, equality, or error behavior.
+  Mitigation: Add a public non-reflexive equality scenario and require concrete risk before extending the consolidation beyond the multi-position operation.
+
+- Risk: The complete corrective campaign can consume up to 43 sessions: eight in the pilot, 34 in promotion, and one in the forward test.
+  Mitigation: Finish all zero-session checks first, request separate explicit cost authorization, bind diagnostic and promotion consumption to a locked cumulative ledger, and stop on every result other than the required `FAIL` baseline or `PASS` candidate.
+
+- Risk: Interrupting a diagnostic after it starts the next observation can leave a reservation and omit a canonical report.
+  Mitigation: Preserve the `/tmp` ledger and disclose both completed consumption and uncertainty about the interrupted invocation. Do not reuse this ledger or represent the interrupted operation as promotable evidence.
+
 ## Validation Strategy
 
 1. Exercise the checker directly and through the zero-session runner case.
@@ -337,3 +418,6 @@ The change is repository local and has no deployment step. Recovery is a normal 
 - A complete observational report can be useful even when it fails, but its `promotion_eligible: false` field must remain prominent because one observation per case cannot replace RED, stable GREEN repetitions, and proportional regression evidence.
 - Archive validation checks pricing shape and projection consistency but does not detect mixed runtime attribution. The report records `$3.448071` by applying Sol rates to aggregate usage; a diagnostic role split using the same dated snapshot yields `$2.660973` for executor usage and `$0.393549` for judge usage, or `$3.054522` total. This derived correction is not written into canonical evidence.
 - A concurrent `restructure-documentation` report appeared before archive rebuilding. Rebuild correctly incorporated it into the shared manifests. It belongs to separate work and was preserved rather than removed or edited.
+- The corrected boundary and cohesion fixtures pass five and four public tests respectively. Structural validation passes, and three independent `coverage-contract` runs return `PASS` with zero executor and zero judge sessions.
+- `codex doctor --json` returned `overallStatus: ok` before the pilot. The hybrid boundary baseline then returned `PASS`, invalidating RED. The runner had already started the candidate executor, so it was interrupted with exit code 130. The campaign ledger records two completed sessions and one active reservation with two sessions remaining; no canonical report was persisted. Whether the interrupted candidate invocation creates external billing consumption is not observable from the runner evidence.
+- The public architecture context appears to make the old instructions sufficient for the boundary contract. A future attempt would need a materially revised evaluation hypothesis and fresh authorization, not a repeat of this campaign or prompt tuning to force a hidden answer.
