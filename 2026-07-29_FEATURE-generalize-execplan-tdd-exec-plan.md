@@ -230,7 +230,10 @@ Produce stable behavior evidence and complete repository validation.
   Mitigation: Require every ExecPlan to remain self contained and describe historical memory as complementary only.
 
 - Risk: The untouched generated scaffold is not structurally valid because its placeholder description parses as a YAML list.
-  Mitigation: Preserve it as immutable historical input, correct the candidate frontmatter, disclose the baseline limitation, and require all semantic RED observations to fail on the behavior contract rather than infrastructure.
+  Mitigation: Preserve it as immutable historical input, use a separately immutable baseline with only the placeholder description normalized to a valid string, and require semantic RED observations to fail on the behavior contract rather than infrastructure.
+
+- Risk: A yielded orchestration wrapper can hide a still running nested evaluation process from host process inspection.
+  Mitigation: Launch every remaining long running promotion directly through the unified command tool, retain its explicit session ID, and follow only that session to a terminal result.
 
 ## Validation Strategy
 
@@ -251,6 +254,32 @@ Pending authorized model evidence:
 - three stable affected candidate GREEN results and the remaining suite regression;
 - fresh agent forward test.
 
+Model execution evidence and correction:
+
+- Two identical `execplan-tdd` promotions were inadvertently active concurrently because the first long running command returned control through an orchestration wrapper while its subprocess continued in a separate process namespace. Host process inspection did not reveal that subprocess, and a direct replacement was started.
+- Both operations stopped at candidate GREEN 1 with `FAIL` before any judge execution. Each consumed three executor sessions, for six sessions total.
+- Retained reports:
+  - `evaluation-reports/execplan-tdd/operations/20260729T165358.661874Z-f0f172c87a08/report.json`
+  - `evaluation-reports/execplan-tdd/operations/20260729T165518.231174Z-f03918253da4/report.json`
+- The failures exposed evaluation contract defects: the incomplete profile case matched harness files with `*`, the documentation oracle rejected a valid concrete no change justification, and the invalid untouched scaffold allowed the globally installed candidate to contaminate baseline behavior.
+- The cases now exclude harness artifacts through a hidden no edits oracle, accept bounded lexical justification in `Documentation Impact`, and use a structurally valid behaviorless baseline whose only scaffold normalization is a valid description string.
+- The corrected documentation oracle passes the retained real candidate artifact, the no edits oracle passes the untouched fixture, and the normalized baseline passes structural validation.
+- A fresh plan requires at most 18 additional sessions for `execplan-tdd`; `implement-execplan` still requires at most 8, and the forward test requires 1. No additional model work may start without fresh authorization for those 27 sessions.
+
+Deterministic readiness after the corrections:
+
+- Rebuilt the canonical evaluation archive and validated 46 reports plus its configured comparison.
+- Replaced two brittle website assertions that fixed the archive at 44 operations. Unit and E2E expectations now derive the public count from canonical `evaluation-reports/manifest.json`.
+- Confirmed the behavior RED before each test correction: the unit suite first failed on `44 archived operations`, then the public checkpoint failed on the same stale desktop and mobile expectation.
+- Repeated the complete website validation in order: 7 unit tests, Prettier, production build with 10 skills and 46 reports, and 12 Playwright journeys all pass.
+- Repeated all 82 deterministic runner tests, structural validation for both candidates and the normalized baseline, archive validation, and both repository diff checks.
+- Exercised each corrected hidden oracle in both directions: the valid retained artifact passes, while fixtures missing the plan or containing edits fail for the expected reason.
+- Confirmed unchanged promotion fingerprints:
+  - `execplan-tdd`: `60211489ed4026a4f951cdf58308bb95c955e4991324f76ba97ccdf64546a87f`
+  - `implement-execplan`: `ddfb5ddf9bd437d7e2462567cf586b8a820bb3a7b059a1977e250192eee7b134`
+- Confirmed `seed4j-execplan-tdd` retains its original two SHA-256 hashes.
+- Observed that the core implementation was incorporated externally in commit `78edb38` while this preparation was in progress. No commit, staging, reset, or restoration was performed by this execution.
+
 ## Documentation Impact
 
 The change intentionally updates root contribution instructions, the root skill catalog and setup guide, website specific workflow instructions, website catalog assertions, and the audit memory repository README. `website/README.md` remains accurate because it already declares the same four final commands and generated content boundary. `website/content-config.json` requires no change because active top level skills are discovered dynamically and the file only declares disabled compatibility skills. No generated website content is edited directly because it is a disposable projection.
@@ -268,3 +297,5 @@ No deployment or publication is part of this work. Rollout consists of reviewing
 - The skill initializer currently produces a placeholder description that the structural validator reads as a list, so an untouched new scaffold cannot satisfy `quick_validate.py` until its frontmatter is implemented.
 - The website catalog test produced the expected RED `10 !== 9`; after the focused assertion update, all seven unit tests and twelve desktop and mobile public journeys passed.
 - The complete deterministic runner suite passes 82 tests, and the Codex preflight reports a healthy authenticated runtime before any nested model execution.
+- Long running nested commands can outlive an orchestration wrapper even when its outer cell reports completion; direct unified sessions are required to avoid accidental concurrent campaigns.
+- Archive size is live evidence, not a stable literal. Website tests must compare the rendered count with the canonical manifest instead of fixing a historical number.
