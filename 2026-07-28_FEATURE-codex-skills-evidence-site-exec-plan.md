@@ -2,6 +2,8 @@
 
 This ExecPlan is a living document. Keep `Progress`, `Decisions`, `Risks`, and `Lessons Learned` up to date as work advances.
 
+Status: Complete. Implementation, repository validation, GitHub Pages enablement, and production publication were confirmed by 2026-07-29.
+
 ## Purpose / Big Picture
 
 Create a VitePress site under `website/`, published at `https://renanfranca.github.io/codex-skills/`, that explains the project, presents its skills, and turns archived evaluation reports into understandable evidence. A reader must be able to inspect what was evaluated, what happened, and which facts were recorded without running Codex CLI locally.
@@ -139,6 +141,9 @@ All milestones and public paths are green; canonical skills and reports are unch
 - [x] Complete Milestone 3
 - [x] Complete Milestone 4
 - [x] Complete Milestone 5
+- [x] Enable GitHub Pages with `Settings → Pages → Source: GitHub Actions`
+- [x] Confirm the production site returns HTTP 200
+- [x] Finalize this ExecPlan on 2026-07-29
 
 ## Decisions
 
@@ -178,6 +183,10 @@ All milestones and public paths are green; canonical skills and reports are unch
   Rationale: A duplicated base path could make generated links disagree with built asset URLs after a future repository rename.
   Date/Author: 2026-07-28 / Codex
 
+- Decision: Enable GitHub Pages manually once through the repository settings rather than granting an administrative token to the deployment workflow.
+  Rationale: The first workflow run failed because no Pages site existed. Selecting `GitHub Actions` as the publishing source created the required Pages configuration without storing a privileged personal access token.
+  Date/Author: 2026-07-29 / Renan Franca and Codex
+
 ## Risks and Mitigations
 
 - Risk: Husky remains inactive because the npm package is below the Git root.
@@ -194,6 +203,12 @@ All milestones and public paths are green; canonical skills and reports are unch
 
 - Risk: GitHub Pages breaks asset URLs.
   Mitigation: Configure `/codex-skills/` and exercise that exact public path with Playwright.
+
+- Risk: A repository without Pages enabled returns `Get Pages site failed` from `actions/configure-pages`.
+  Mitigation: GitHub Pages was enabled once through `Settings → Pages → Source: GitHub Actions`, the workflow then succeeded, and the production URL was confirmed with HTTP 200.
+
+- Risk: The current `configure-pages@v5` and `deploy-pages@v4` releases emit a Node 20 deprecation warning even though the GitHub runner uses Node 24.
+  Mitigation: The warning does not block the successful deployment. Updating the Pages actions to their Node 24 releases is recorded as future workflow maintenance outside this completed feature plan.
 
 - Risk: VitePress 1.6.4 brings development-server advisories through Vite and esbuild with no compatible automated fix reported by npm.
   Mitigation: Keep the development server bound locally, deploy only static output, record the audit result, and reassess when a compatible VitePress release is selected.
@@ -231,9 +246,16 @@ Final results on 2026-07-28:
 - Build warning retained: evidence-heavy chunks exceed 500 kB.
 - npm audit retained: 2 moderate and 1 high development-server advisories inherited through VitePress 1.6.4, with no compatible automated fix reported.
 
+Production validation on 2026-07-29:
+
+- The first Pages configuration attempt failed with `Get Pages site failed` because the repository did not yet have GitHub Pages enabled.
+- Renan Franca selected `GitHub Actions` under `Settings → Pages → Source`.
+- The same deployment path then completed successfully without adding `enablement: true` or an administrative token.
+- `curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\n' https://renanfranca.github.io/codex-skills/`: `200 https://renanfranca.github.io/codex-skills/`.
+
 ## Rollout and Recovery
 
-GitHub Pages deploys only from the main branch after all checks pass. A failed workflow leaves the previous Pages deployment available. Recovery is a normal revert or a generator fix followed by the same workflow; canonical evaluation evidence is not rewritten during rollout or recovery.
+GitHub Pages was enabled with GitHub Actions as its publishing source and the production site is available at `https://renanfranca.github.io/codex-skills/`. Future deployments run from the main branch only after all checks pass. A failed workflow leaves the previous Pages deployment available. Recovery is a normal revert or a generator fix followed by the same workflow; canonical evaluation evidence is not rewritten during rollout or recovery.
 
 ## Lessons Learned
 
@@ -249,3 +271,6 @@ GitHub Pages deploys only from the main branch after all checks pass. A failed w
 - The first final-review pass found that archived fragment metadata was normalized but not rendered. Execution returned to behavior TDD before final completion, as required by the workflow.
 - The restored behavior checkpoint added fragment rendering without weakening archive escaping: generated evidence remains inert text, and both deterministic and browser suites are green.
 - Final repository validation completed after post-green design consolidation on 2026-07-28.
+- A valid Pages workflow cannot configure a repository that has never had Pages enabled when it uses only the default `GITHUB_TOKEN`; the repository owner must first select `GitHub Actions` as the publishing source or deliberately provide a separate administrative credential.
+- The first deployment failure was therefore an external repository configuration prerequisite, not a defect in the generated site or its public-path tests.
+- Production publication was confirmed with HTTP 200, and this ExecPlan was finalized on 2026-07-29.
