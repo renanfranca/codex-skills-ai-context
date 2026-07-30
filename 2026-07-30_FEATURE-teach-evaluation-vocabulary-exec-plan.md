@@ -206,6 +206,39 @@ Make inline code and every Markdown code block readable without changing the est
 - [x] Diffs and code fragments remain expandable and do not create document overflow.
 - [x] No archived report, generated projection, component, or screenshot baseline changes.
 
+### Milestone 7 - Restore the complete model session definition
+
+#### Goal
+
+Restore the model session semantics lost in commit `52f6416c` and make the central glossary the actual source for the promotion panel, the `Executed sessions` contextual help, and the complete vocabulary guide. All three surfaces must explain the isolated ephemeral runner invocation, executor and optional judge responsibilities, excluded concepts, and zero-session deterministic checks.
+
+#### Changes
+
+- [x] Expand `website/tests/site-content.test.mjs` so serialized glossary behavior requires canonical executor, judge, and model session definitions without removing or renaming any existing property.
+- [x] Restore detailed promotion panel expectations and extend the vocabulary browser journey in `website/e2e/site.spec.mjs`, including inline code markup, one guide entry, keyboard navigation, and overflow.
+- [x] Extend `website/scripts/evaluation-glossary.mjs` with canonical structured descriptions while preserving public `description` strings.
+- [x] Add one small shared structured-description renderer and use it from `website/.vitepress/theme/EvidenceStatus.vue` and `website/.vitepress/theme/EvaluationHelp.vue`.
+- [x] Remove the duplicate `Executed sessions` guide entry while keeping the canonical model session entry under “How an evaluation is produced”.
+- [x] Restore the complete explanation in `website/README.md`; leave `website/content-config.json`, root documentation, schemas, generated projections, and archived reports unchanged.
+- [x] Update only the existing desktop and mobile vocabulary guide snapshots after confirming their diffs contain only the restored explanation.
+
+#### Validation
+
+- [x] Command from `website/` for every cycle: `npm test`
+- [x] Focused public RED and GREEN: `npx playwright test e2e/site.spec.mjs --grep "a validated promotion explains qualification and recorded effort|report vocabulary is learnable in context and in the complete guide"`
+- [x] Public checkpoint from `website/`: `npm run test:e2e`
+- [x] Final sequence from `website/`: `npm test`, `npm run prettier:check`, `npm run build`, `npm run test:e2e`
+- [x] Command from repository root: `git diff --check`
+- [x] Command from memory worktree: `git diff --check`
+
+#### Acceptance Criteria
+
+- [x] The serialized glossary additively defines executor, judge, and model session, including `codex exec --json`, runner ownership, role responsibilities, excluded concepts, and zero sessions for deterministic checks.
+- [x] The promotion panel, `Executed sessions` help, and complete guide render the same full canonical definition, with `codex exec --json` in a `<code>` element.
+- [x] The guide contains exactly one model session entry, remains keyboard navigable, and creates no document overflow.
+- [x] Only the two existing vocabulary guide snapshots change, and their visual differences contain only the restored explanation.
+- [x] No generated projection, archived report, schema, public configuration, or unrelated component changes.
+
 ## Progress
 
 - [x] Repository and nested instructions read.
@@ -228,6 +261,8 @@ Make inline code and every Markdown code block readable without changing the est
 - [ ] Milestone 5 final correction completed and green in GitHub Actions.
 - [x] Milestone 6 started after measuring approximately 1.18:1 contrast for light theme inline code and 2.47:1 for unhighlighted block lines.
 - [x] Milestone 6 completed: computed contrast, expansion, overflow, both themes, and the complete local validation sequence are green.
+- [x] Milestone 7 started after confirming commit `52f6416c` replaced the complete model session explanation with a shorter qualification-specific sentence.
+- [x] Milestone 7 completed: the complete canonical model session definition now comes from the serialized glossary and is rendered consistently in all three public surfaces.
 
 ## Decisions
 
@@ -279,6 +314,14 @@ Make inline code and every Markdown code block readable without changing the est
   Rationale: The review classified the CSS token override and the local computed-contrast test helper as `No action`. Each stays at its natural boundary, introduces no mutable state or duplicated production transformation, and extracting either would add topology without removing a demonstrated risk.
   Date/Author: 2026-07-30 / Codex
 
+- Decision: Represent the model session explanation as a compatible plain `description` plus frozen typed segments, and reuse the same glossary entry for `modelSession` and `fields.sessions`.
+  Rationale: Existing `data.json` consumers retain the public string and all prior properties, while Vue can render only the technical command as inline code without reconstructing prose or maintaining surface-specific copies.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Consolidate the three public model session assertions in one browser-test behavior helper after GREEN.
+  Rationale: The post GREEN design review classified their repetition as a maintainability opportunity because the same contract could drift between the promotion panel, contextual help, and guide. The helper changes no production topology or observable behavior.
+  Date/Author: 2026-07-30 / Codex
+
 ## Risks and Mitigations
 
 - Risk: Canonical reports vary across archive generations and may omit newer telemetry.
@@ -304,6 +347,12 @@ Make inline code and every Markdown code block readable without changing the est
 
 - Risk: Fixing only highlighted spans can leave plain diff context, blank lines, or language labels below the contrast target.
   Mitigation: Test the rendered fallback text and language label separately, set the block-level foreground explicitly, and apply dark Shiki tokens to all highlighted spans on the established dark surface.
+
+- Risk: Copying the restored prose into three Vue surfaces can allow the definitions to drift again.
+  Mitigation: Keep the compatible plain description and structured inline-code segments in the glossary, then render that same entry through one shared component.
+
+- Risk: Listing `Executed sessions` both as production vocabulary and as an execution fact duplicates the model session definition in the complete guide.
+  Mitigation: Keep the entry only in “How an evaluation is produced” while retaining contextual help on the report fact itself.
 
 ## Validation Strategy
 
@@ -372,9 +421,30 @@ Milestone 6 validation on 2026-07-30:
 10. `git diff --check` passed in the main repository.
 11. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 7 prefinal validation on 2026-07-30:
+
+1. The first `npm test` RED failed because serialized `evaluationGlossary.executor` did not exist.
+2. The focused public RED failed in desktop Chromium and Pixel 7 because both the promotion panel and `Executed sessions` help lacked the complete definition.
+3. After implementation, `npm test` passed all 24 tests.
+4. The focused public journey passed every semantic and inline-code assertion; only the two expected vocabulary guide snapshots failed.
+5. Visual inspection confirmed the material snapshot differences were confined to the restored executor, judge, and model session explanations. Existing environment-specific glyph antialiasing remained within the previously approved rendering policy.
+6. Only the existing desktop and mobile vocabulary guide snapshots were regenerated; no new snapshot was created.
+7. The public checkpoint passed 27 tests across desktop Chromium and Pixel 7 with the desktop-only geometry journey intentionally skipped on mobile.
+8. The post GREEN design review consolidated repeated public definition assertions and classified the production glossary entry, renderer, and consuming surfaces as `No action`.
+9. After the test refactor, `npm test` again passed all 24 tests and `npm run test:e2e` again passed 27 tests with the same intentional mobile skip.
+
+Milestone 7 final validation on 2026-07-30:
+
+1. Final `npm test` passed all 24 tests.
+2. Final `npm run prettier:check` passed.
+3. Final `npm run build` validated 53 reports, regenerated the disposable site projection, and completed successfully. The existing chunk size advisory remained nonblocking.
+4. Final `npm run test:e2e` passed 27 tests across desktop Chromium and Pixel 7; the desktop-only geometry journey remained intentionally skipped on mobile.
+5. `git diff --check` passed in the main repository.
+6. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+
 ## Documentation Impact
 
-`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. Milestone 6 repairs the existing readable report presentation and changes no generated data, contributor command, configuration, or user workflow, so it requires no README prose or screenshot baseline update; computed contrast is the canonical regression check. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
+`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, responsive learning surfaces, and the complete canonical model session definition. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. Milestone 6 repairs the existing readable report presentation and changes no generated data, contributor command, configuration, or user workflow, so it requires no README prose or screenshot baseline update; computed contrast is the canonical regression check. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed and it already states that deterministic cases consume no model sessions. `EVALUATIONS.md` remains the detailed canonical contract and already defines the fresh ephemeral executor, separate judge, `codex exec --json` invocation, model sessions, results, persistence, and zero-session deterministic behavior; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation. Milestone 7 leaves generated projections, archived reports, and `website/content-config.json` untouched.
 
 ## Rollout and Recovery
 
@@ -394,3 +464,5 @@ The site is statically generated. Rollout consists only of later publishing by a
 - A sequence of screenshot expectations can hide later environment differences because Playwright stops the test at the first failed expectation. Visual stability policy should follow the rendering boundary being compared rather than only the device and snapshot combinations observed in the first failing run.
 - VitePress selected `--shiki-light` tokens from its theme name even though this site deliberately keeps code block surfaces dark in light mode. The surface decision and syntax token decision must stay aligned explicitly.
 - Inline code and code block fallback text use separate VitePress variables. Correcting only `--vp-code-color` leaves unstyled fragment lines and language identifiers on their previous low-contrast fallbacks.
+- A rootless Vue renderer can preserve surrounding paragraph and definition-list semantics while selectively emitting the glossary's structured code segment. Sharing the full entry object keeps plain serialization and rendered prose aligned.
+- Opening an additional mobile contextual-help sheet changes the underlying page scroll position before the guide screenshot. Explicitly restoring the “Execution facts” heading position keeps the snapshot focused on guide content rather than an incidental journey scroll.
