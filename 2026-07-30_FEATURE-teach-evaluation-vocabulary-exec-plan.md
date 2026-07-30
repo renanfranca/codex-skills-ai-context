@@ -133,7 +133,7 @@ Correct the desktop positioning defect discovered after the initial implementati
 #### Validation
 
 - [ ] Command: `npm test`
-- [ ] Expected result: all generator and hook behavior tests remain green during the browser RED/GREEN cycle.
+- [x] Expected result: all generator and hook behavior tests remain green during the browser RED/GREEN cycle.
 - [ ] Command: `npm run test:e2e`
 - [ ] Expected result: every desktop and Pixel 7 journey passes, including the new geometry assertions.
 
@@ -176,6 +176,36 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] No screenshot baseline, tolerance, font, component, or style changes before the retained diff is inspected.
 - [ ] The final visual correction follows the recorded classification and the public checkpoint passes in GitHub Actions.
 
+### Milestone 6 - Restore code contrast in both themes
+
+#### Goal
+
+Make inline code and every Markdown code block readable without changing the established dark block appearance. The archived `execplan-tdd` promotion report `20260729T181620.575049Z-cc3d76bb204a` must expose at least a 4.5:1 computed contrast ratio for its operation, operation identifier, and an unhighlighted diff context or comment line in both light and dark themes.
+
+#### Changes
+
+- [x] Expand the public code inspection journey in `website/e2e/site.spec.mjs` to measure computed foreground and background colors in the named report, while retaining expansion and overflow assertions for diffs and fragments.
+- [x] Update only `website/.vitepress/theme/custom.css`: give light theme inline code a dark foreground, preserve the current light foreground in dark theme, give plain code block text and language identifiers a light foreground, and make light theme Shiki spans use the tokens intended for dark backgrounds.
+- [x] Apply the correction through global VitePress Markdown selectors so diffs, fragments, and other generated report blocks share the behavior without editing archived reports, generated projections, or components.
+- [x] Inspect canonical documentation and existing visual snapshots; no update is required because the change repairs the existing readability contract, changes no configuration or contributor workflow, and the contrast journey replaces a new raster baseline.
+
+#### Validation
+
+- [x] Command from `website/`: `npm test`
+- [x] Expected result: all generator and hook behavior tests remain green during the browser RED/GREEN cycle.
+- [x] Command from `website/`: `npm run test:e2e`
+- [x] Expected result: the contrast journey and all existing desktop and Pixel 7 journeys pass without new snapshots.
+- [x] Final sequence from `website/`: `npm test`, `npm run prettier:check`, `npm run build`, `npm run test:e2e`
+- [x] Command from repository root: `git diff --check`
+- [x] Command from memory worktree: `git diff --check`
+
+#### Acceptance Criteria
+
+- [x] `validate-change`, the inline report identifier, and a diff context or comment line each have computed contrast of at least 4.5:1 in light and dark themes.
+- [x] Code blocks retain their dark background in light mode and use dark-background Shiki tokens.
+- [x] Diffs and code fragments remain expandable and do not create document overflow.
+- [x] No archived report, generated projection, component, or screenshot baseline changes.
+
 ## Progress
 
 - [x] Repository and nested instructions read.
@@ -196,6 +226,8 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] Milestone 5 device-specific policy disproved by run `30554147675`; the failure surfaced sequentially only after the preceding desktop expectation passed.
 - [x] Milestone 5 corrected page-snapshot policy completed and locally validated.
 - [ ] Milestone 5 final correction completed and green in GitHub Actions.
+- [x] Milestone 6 started after measuring approximately 1.18:1 contrast for light theme inline code and 2.47:1 for unhighlighted block lines.
+- [x] Milestone 6 completed: computed contrast, expansion, overflow, both themes, and the complete local validation sequence are green.
 
 ## Decisions
 
@@ -239,6 +271,14 @@ Make environment-specific Playwright failures observable before changing screens
   Rationale: Artifact `playwright-test-results-30553266562-1` first showed changed glyph and icon edges in the desktop execution facts page and mobile guide. Run `30554147675` then reached the desktop guide after the preceding expectation passed and exposed another 99 stable antialiasing pixels. The source of nondeterminism is the page-wide rasterization environment, not a particular device profile. Panel bounds, dividers, positions, wrapping, solid fills, and semantic geometry assertions remain unchanged.
   Date/Author: 2026-07-30 / Codex
 
+- Decision: Preserve dark code block surfaces in both themes and change only their foreground token selection.
+  Rationale: The dark block surface is part of the approved visual system. Selecting Shiki dark-background tokens in light mode and defining explicit fallback text colors corrects readability globally without changing archived content or generated markup.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Keep the post GREEN implementation unchanged after design review.
+  Rationale: The review classified the CSS token override and the local computed-contrast test helper as `No action`. Each stays at its natural boundary, introduces no mutable state or duplicated production transformation, and extracting either would add topology without removing a demonstrated risk.
+  Date/Author: 2026-07-30 / Codex
+
 ## Risks and Mitigations
 
 - Risk: Canonical reports vary across archive generations and may omit newer telemetry.
@@ -261,6 +301,9 @@ Make environment-specific Playwright failures observable before changing screens
 
 - Risk: A failed step elsewhere in the build could trigger an irrelevant or empty Playwright artifact upload.
   Mitigation: Condition the upload on the named public path checkpoint outcome and warn rather than obscure the original failure when no files are present.
+
+- Risk: Fixing only highlighted spans can leave plain diff context, blank lines, or language labels below the contrast target.
+  Mitigation: Test the rendered fallback text and language label separately, set the block-level foreground explicitly, and apply dark Shiki tokens to all highlighted spans on the established dark surface.
 
 ## Validation Strategy
 
@@ -315,9 +358,23 @@ Milestone 5 corrected page-snapshot policy validation on 2026-07-30:
 6. `git diff --check` passed in the main repository.
 7. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 6 validation on 2026-07-30:
+
+1. The focused browser RED failed in both device profiles at 1.10:1 for the first light theme inline code assertion, confirming the intended contrast defect.
+2. `npm test` passed all 24 tests after the CSS correction.
+3. The focused contrast journey passed in desktop Chromium and Pixel 7 after rebuilding the site.
+4. The public checkpoint passed 27 tests across desktop and Pixel 7; the desktop-only geometry journey remained intentionally skipped in the mobile project.
+5. The post GREEN design review classified the CSS token override and local computed-contrast helper as `No action`; both remain cohesive at their existing presentation and browser-test boundaries.
+6. Final `npm test` passed all 24 tests.
+7. Final `npm run prettier:check` passed.
+8. Final `npm run build` validated 53 reports, regenerated the disposable site projection, and completed successfully. The existing chunk size advisory remained nonblocking.
+9. Final `npm run test:e2e` passed 27 tests across desktop and Pixel 7 with the same intentional mobile skip.
+10. `git diff --check` passed in the main repository.
+11. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+
 ## Documentation Impact
 
-`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
+`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. Milestone 6 repairs the existing readable report presentation and changes no generated data, contributor command, configuration, or user workflow, so it requires no README prose or screenshot baseline update; computed contrast is the canonical regression check. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
 
 ## Rollout and Recovery
 
@@ -335,3 +392,5 @@ The site is statically generated. Rollout consists only of later publishing by a
 - GitHub Actions run `30553266562` retained artifact `playwright-test-results-30553266562-1`. Inspection of the expected, actual, and diff PNGs confirmed identical layout geometry: the mobile diff follows glyph antialiasing edges and the desktop diff is limited to 60 pixels around contextual help icons.
 - GitHub Actions run `30554147675` retained artifact `playwright-test-results-30554147675-1`. Its desktop guide expected, actual, and diff PNGs show 99 stable changed pixels along glyph edges with identical layout. The earlier run could not reveal this snapshot because the same test stopped at its preceding failed expectation.
 - A sequence of screenshot expectations can hide later environment differences because Playwright stops the test at the first failed expectation. Visual stability policy should follow the rendering boundary being compared rather than only the device and snapshot combinations observed in the first failing run.
+- VitePress selected `--shiki-light` tokens from its theme name even though this site deliberately keeps code block surfaces dark in light mode. The surface decision and syntax token decision must stay aligned explicitly.
+- Inline code and code block fallback text use separate VitePress variables. Correcting only `--vp-code-color` leaves unstyled fragment lines and language identifiers on their previous low-contrast fallbacks.
