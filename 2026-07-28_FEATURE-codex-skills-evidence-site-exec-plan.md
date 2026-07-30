@@ -2,7 +2,7 @@
 
 This ExecPlan is a living document. Keep `Progress`, `Decisions`, `Risks`, and `Lessons Learned` up to date as work advances.
 
-Status: Complete. Implementation, repository validation, GitHub Pages enablement, and production publication were confirmed by 2026-07-29.
+Status: Implementation complete locally. The original site was published by 2026-07-29. Milestone 6 made visual snapshot generation and comparison hermetic on 2026-07-30. Rollout verification remains intentionally pending until the user pushes the change.
 
 ## Purpose / Big Picture
 
@@ -12,7 +12,7 @@ Create a VitePress site under `website/`, published at `https://renanfranca.gith
 
 The work includes an English, mobile-first VitePress site; a deterministic content generator based on existing `evaluation-reports/**/report.json` files; skill and evaluation pages; Prettier, Husky, and lint-staged integration with the repository root; unit and browser tests; and a GitHub Pages workflow.
 
-The work excludes changes to skills, the evaluation runner, evaluation contracts, canonical reports, and the personal `renanfranca.github.io` repository. It also excludes new model sessions and inferred facts that are absent from archived evidence.
+The work excludes changes to skills, the evaluation runner, evaluation contracts, canonical reports, and the personal `renanfranca.github.io` repository. It also excludes new model sessions and inferred facts that are absent from archived evidence. Milestone 6 adds only the website visual-test runner, its deterministic environment contract, the Pages build environment, regenerated existing snapshots, and contributor documentation. It does not add screenshot tolerance, new screenshot files, a commit, a push, or a deployment.
 
 ## Definitions
 
@@ -30,7 +30,7 @@ The deleted nested Git history is no longer present in the workspace. Its effect
 
 The public site provides `/codex-skills/`, `/codex-skills/skills/`, one page per skill, `/codex-skills/evaluations/`, and one page per archived evaluation path. Pages expose summaries first and expandable evidence details, including failed runs when present. Missing facts are shown as `Not recorded`.
 
-`npm run dev` generates content and starts VitePress. `npm run build` validates the archive, regenerates deterministic content, and builds the static site. `npm test` runs behavior tests, and `npm run test:e2e` exercises the built public path.
+`npm run dev` generates content and starts VitePress. `npm run build` validates the archive, regenerates deterministic content, and builds the static site. `npm test` runs behavior tests. `npm run test:e2e` builds on the host and runs the browser checkpoint in one digest-pinned Playwright container; `npm run test:e2e:direct` is the internal command used only when execution is already inside that container.
 
 Initial evidence labels are: `restructure-documentation` as current promotion, `refactor-design` as current observations, `develop-skill-with-evals` as historical evidence, and other active skills as no archived evidence.
 
@@ -126,6 +126,37 @@ Run archive validation, Prettier check, unit tests, VitePress build, Playwright,
 
 All milestones and public paths are green; canonical skills and reports are unchanged; unrelated caches are untracked; and this ExecPlan records final validation evidence.
 
+### Milestone 6 - Make visual snapshots hermetic
+
+#### Goal
+
+Generate and compare all Playwright screenshots in one reproducible Linux environment so local baselines and GitHub Actions use the same fonts, browser, operating system, and Playwright version without weakening exact visual comparison.
+
+#### Changes
+
+Add a deterministic behavior test under `website/tests/` that reads the public package contract, local container runner, and Pages workflow and rejects any version or image divergence. Add a local runner under `website/scripts/` that builds the site on the host, then runs Playwright with forwarded arguments in `mcr.microsoft.com/playwright:v1.62.0-jammy@sha256:b012874f829d298730411256666afcaeaeebaf505a0cf4c2f668d6dedb3d1e80`, `--init`, `--ipc=host`, the local user, the repository mounted at the same absolute path, and an isolated volume over `website/node_modules`. Make `npm run test:e2e` the containerized public command and retain `test:e2e:direct` only for execution already in the container.
+
+Run the GitHub Actions `build` job in the same digest-pinned image, install Node 24 and Python explicitly, remove redundant browser installation, and call the direct E2E command. Remove `maxDiffPixelRatio: 0.01` from both page screenshots. Regenerate exactly the eight tracked PNG baselines in the container, inspect changes before retaining them, and update `website/README.md` with Docker as the visual-checkpoint prerequisite and the containerized baseline-update command. Do not edit `website/.generated/` directly.
+
+The failure evidence is GitHub Actions run `30561602385` at commit `d0147bac64ac692da388f47714032e198bfc473f`. Its `build` job passed dependency installation and deterministic tests, then failed only the mobile `evaluation-vocabulary-guide.png` snapshot with 4,638 changed pixels, ratio 0.02, identically on the initial attempt and both retries. Artifact `playwright-test-results-30561602385-1`, digest `sha256:4c2775d6a2e70739106cbbfde35927773a8cf8c926d9fb362281c61ebc17c0e8`, contains equal 412 by 839 expected and actual images plus a diff concentrated on glyph edges. The three actual images are byte-identical, which identifies a stable cross-environment font-rasterization difference rather than an intermittent browser failure.
+
+#### Validation
+
+First run `npm test` after adding only the synchronization test and require the expected RED caused by the current unpinned direct runner and uncontainerized workflow. After implementation, run `npm test` for GREEN. Run `npm run test:e2e -- --update-snapshots`, confirm the tracked snapshot file set remains exactly eight PNG files, and inspect every changed baseline. Then run `npm run test:e2e` three consecutive times and require all exact comparisons to pass.
+
+After the public checkpoint is green, load and follow `refactor-design`, reconcile `website/README.md`, `.github/workflows/deploy-website.yml`, `website/package.json`, and the root documentation, then run final validation from `website/` in this exact order:
+
+    npm test
+    npm run prettier:check
+    npm run build
+    npm run test:e2e
+
+Finally run `git diff --check` in `/home/renanfranca/.codex/skills` and `git diff --check` in `_temporary/codex-skills-ai-context`.
+
+#### Acceptance Criteria
+
+The package, runner, and workflow name Playwright 1.62.0 and the same digest-pinned Jammy image; future divergence fails deterministic tests. The public E2E command requires Docker and forwards Playwright arguments. CI uses the direct command inside the same image and no longer downloads Chromium. Both page screenshots use exact comparison. Exactly eight snapshot files remain, three consecutive container runs pass, canonical documentation matches the commands, and all final validation commands are green.
+
 ## Progress
 
 - [x] Create `website/` with Seed4J
@@ -144,6 +175,18 @@ All milestones and public paths are green; canonical skills and reports are unch
 - [x] Enable GitHub Pages with `Settings → Pages → Source: GitHub Actions`
 - [x] Confirm the production site returns HTTP 200
 - [x] Finalize this ExecPlan on 2026-07-29
+- [x] Inspect GitHub Actions run `30561602385` and its Playwright artifact
+- [x] Resolve the official multi-platform image digest for Playwright 1.62.0 Jammy
+- [x] Start Milestone 6
+- [x] Demonstrate synchronization-contract RED
+- [x] Implement the hermetic local and CI visual environment
+- [x] Regenerate and inspect exactly eight existing snapshots
+- [x] Pass the exact visual suite three consecutive times
+- [x] Complete post-GREEN design review
+- [x] Reconcile canonical documentation
+- [x] Complete Milestone 6 final validation
+- [x] Complete Milestone 6 locally
+- [ ] After a user push, verify that the new workflow run completes `build`, uploads the Pages artifact, and executes `deploy`
 
 ## Decisions
 
@@ -187,6 +230,18 @@ All milestones and public paths are green; canonical skills and reports are unch
   Rationale: The first workflow run failed because no Pages site existed. Selecting `GitHub Actions` as the publishing source created the required Pages configuration without storing a privileged personal access token.
   Date/Author: 2026-07-29 / Renan Franca and Codex
 
+- Decision: Pin the official Playwright 1.62.0 Jammy multi-platform image by tag and index digest in both local and CI execution.
+  Rationale: Playwright recommends generating and comparing screenshots in the same environment. The tag communicates the package compatibility and the digest prevents the operating system, browsers, fonts, or architecture manifests from changing under that tag.
+  Date/Author: 2026-07-30 / Renan Franca and Codex
+
+- Decision: Keep page screenshots exact instead of raising `maxDiffPixelRatio`.
+  Rationale: Run `30561602385` produced the same 2% glyph-edge difference on every retry, so tolerance would hide a stable environment mismatch rather than remove its cause.
+  Date/Author: 2026-07-30 / Renan Franca and Codex
+
+- Decision: Retain the image reference in the local runner and workflow rather than introducing another configuration format.
+  Rationale: GitHub Actions cannot directly consume a shell variable for the job container image. The deterministic synchronization test makes the necessary boundary duplication executable and also verifies that the image tag matches the package version.
+  Date/Author: 2026-07-30 / Codex
+
 ## Risks and Mitigations
 
 - Risk: Husky remains inactive because the npm package is below the Git root.
@@ -218,6 +273,21 @@ All milestones and public paths are green; canonical skills and reports are unch
 
 - Risk: Local caches enter the change.
   Mitigation: Never stage `_temporary/`, `__pycache__`, `node_modules`, or generated artifacts that are not intentional site sources.
+
+- Risk: A bind-mounted host `node_modules` contains binaries incompatible with the container or lets host dependency state leak into visual tests.
+  Mitigation: Mount a dedicated Docker volume over `website/node_modules` and run `npm ci` inside the container before the direct Playwright command.
+
+- Risk: The pinned container defaults do not match the repository's Node 24 and Python requirements.
+  Mitigation: Configure Node 24 and Python explicitly in the CI job, while the local runner builds the evidence-backed site on the host and uses the container only for browser execution.
+
+- Risk: Running the container as the local user cannot write to a newly created Docker volume.
+  Mitigation: Make the local runner initialize the isolated dependency volume with ownership suitable for the invoking user before running `npm ci`.
+
+- Risk: A future Playwright dependency update silently retains the old browser image or snapshots.
+  Mitigation: A deterministic test compares the exact package version, local image reference, and workflow image reference.
+
+- Risk: CSS smooth scrolling leaves the page behind a mobile sheet at a different position when the screenshot is captured.
+  Mitigation: The visual journey disables smooth scrolling before its interactions, then selects and verifies the document's absolute top with an instant scroll and two rendered frames. Unlike the lower boundary, the top does not depend on total rendered document height. The sheet content, overflow, keyboard, geometry, and semantic assertions remain unchanged.
 
 ## Validation Strategy
 
@@ -253,6 +323,30 @@ Production validation on 2026-07-29:
 - The same deployment path then completed successfully without adding `enablement: true` or an administrative token.
 - `curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\n' https://renanfranca.github.io/codex-skills/`: `200 https://renanfranca.github.io/codex-skills/`.
 
+Milestone 6 validation evidence will be appended here as each gate completes. Deployment verification is intentionally deferred until the user pushes the completed change; no agent commit, push, publication, or deployment is authorized.
+
+The synchronization contract RED was demonstrated on 2026-07-30 with `npm test`: 24 existing tests passed and the new visual-environment test failed because the public container runner did not exist. This is the expected missing-behavior failure before implementation.
+
+The containerized update exercised all eight existing snapshot assertions without adding files. The final inspected set still contains exactly eight PNG files. Six remained byte-identical; `evaluation-vocabulary-guide-mobile-linux.png` and `execution-facts-help-desktop-linux.png` changed after the visual journey was placed in an explicit stationary scroll state. With those final baselines, three consecutive exact `npm run test:e2e` executions each passed 27 tests with the one expected project-specific skip.
+
+Final validation on 2026-07-30 passed in the required order:
+
+- `npm test`: 25 tests passed.
+- `npm run prettier:check`: all matched files use Prettier formatting.
+- `npm run build`: archive validation passed with 53 reports and 1 comparison; generation produced 10 skills and 53 reports; VitePress built successfully with the existing large-chunk warning.
+- `npm run test:e2e`: 27 tests passed with 1 expected project-specific skip in the digest-pinned container.
+- `git diff --check` in `/home/renanfranca/.codex/skills`: passed.
+- `git diff --check` in `_temporary/codex-skills-ai-context`: passed.
+- `bash -n website/scripts/run-playwright-container.sh`: passed.
+
+## Documentation Impact
+
+`website/README.md` is the canonical contributor guide for website prerequisites and commands. It now requires Docker for the browser checkpoint, removes the obsolete host Chromium installation, documents the digest-pinned container behavior, gives the public baseline-update command, and restricts `test:e2e:direct` to execution already inside the exact container.
+
+`website/package.json` is the canonical public command configuration. It exposes the container runner as `test:e2e` and the direct Playwright command as `test:e2e:direct`. `.github/workflows/deploy-website.yml` is the canonical publication configuration. It pins the build job to the same image, configures Node 24 and Python 3.13, builds once, and invokes the direct checkpoint without installing Chromium.
+
+The root `README.md` remains accurate without change because its website section only explains how to start Codex in the nested workflow scope; it does not document browser prerequisites or E2E commands. `CODEX_CLI.md`, `EVALUATIONS.md`, and `website/content-config.json` do not describe visual testing or CI runtime and therefore remain unchanged. `website/.generated/` remains a disposable projection and was regenerated only through repository commands, never edited directly.
+
 ## Rollout and Recovery
 
 GitHub Pages was enabled with GitHub Actions as its publishing source and the production site is available at `https://renanfranca.github.io/codex-skills/`. Future deployments run from the main branch only after all checks pass. A failed workflow leaves the previous Pages deployment available. Recovery is a normal revert or a generator fix followed by the same workflow; canonical evaluation evidence is not rewritten during rollout or recovery.
@@ -274,3 +368,11 @@ GitHub Pages was enabled with GitHub Actions as its publishing source and the pr
 - A valid Pages workflow cannot configure a repository that has never had Pages enabled when it uses only the default `GITHUB_TOKEN`; the repository owner must first select `GitHub Actions` as the publishing source or deliberately provide a separate administrative credential.
 - The first deployment failure was therefore an external repository configuration prerequisite, not a defect in the generated site or its public-path tests.
 - Production publication was confirmed with HTTP 200, and this ExecPlan was finalized on 2026-07-29.
+- GitHub Actions run `30561602385` retained a byte-stable actual screenshot across all three attempts while differing from the local baseline only around text glyphs. Retrying cannot repair this class of failure; baseline generation and comparison must share the full visual environment.
+- The first exact container rerun exposed a second source of nondeterminism: the mobile guide test used `window.scrollTo` while the document enabled smooth scrolling. Playwright observed materially different intermediate page positions behind an otherwise identical bottom sheet. The journey now requests an instant scroll to the already intended position rather than weakening pixel comparison.
+- The attempted fixed `48px` heading position was below the document's lower scroll boundary; Chromium correctly stopped with the heading at `92px`. This ruled out an element offset and led to testing an explicit document boundary instead.
+- A later exact run proved that the computed bottom boundary was also unsuitable as a canonical screenshot background because total rendered document height could place different collapsed evidence blocks under the fixed backdrop. The absolute document top is always reachable and independent of content height, so it is the stable background state for the page screenshot.
+- The final-validation diff showed the fixed sheet unchanged while the underlying document advanced roughly 32 pixels after the test had observed `scrollY = 0`. The page's smooth-scroll policy was still active across earlier focus and click interactions. The visual journey now disables smooth scrolling before those interactions and waits for two rendered frames at the canonical top before capture.
+- After that setup change, the desktop help screenshot differed from its previous baseline by 232 glyph-edge pixels. Ten isolated single-worker repetitions all produced the identical actual PNG hash `3bf273279949c70e2589ffc710f50c2b0747431c5dad66258e124f6a215cde19`. This was a stable obsolete baseline caused by the changed journey setup, not concurrency or residual rasterization instability, so the container baseline was updated.
+- The first post-update exact run passed every screenshot and exposed a separate existing race in the desktop anchored-popover geometry test: `window.scrollBy` inherited smooth scrolling and the assertion sometimes observed the unchanged initial top. The test now requests the same 160-pixel movement instantly and retains its viewport and repositioning assertions.
+- Post-GREEN design review classified early cleanup registration as a design risk: a host build failure occurred before volume creation but still invoked volume removal, which could obscure the original diagnostic. The runner now registers cleanup only after successful volume creation and never lets cleanup failure replace the primary command failure. Image-reference duplication was classified as no action because it crosses shell and GitHub Actions configuration boundaries and is mechanically synchronized.
