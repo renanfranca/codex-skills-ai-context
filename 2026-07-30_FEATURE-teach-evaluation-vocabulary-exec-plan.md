@@ -117,6 +117,32 @@ Confirm the green implementation has sound responsibilities, accurate canonical 
 - [ ] Every canonical documentation source has an update or explicit no-change justification.
 - [ ] All final validation commands pass in order.
 
+### Milestone 4 - Keep contextual popovers inside the viewport
+
+#### Goal
+
+Correct the desktop positioning defect discovered after the initial implementation. A contextual field popover must use its rendered dimensions to open above or below the triggering label, remain at least 16 pixels inside the viewport, expose internal scrolling when its content is taller than the available space, and reposition when the document or a scroll container moves.
+
+#### Changes
+
+- [ ] Add one browser behavior test in `website/e2e/site.spec.mjs` that opens the tallest field taxonomy near the viewport bottom, verifies the complete panel bounds, scrolls the page, and verifies the bounds again.
+- [ ] Replace the assumed 360 pixel height in `website/.vitepress/theme/EvaluationHelp.vue` with positioning based on the rendered panel height and the available viewport.
+- [ ] Reuse the established promotion popover positioning behavior where its semantics match, without coupling the two dialogs or changing mobile sheets and the broad guide.
+- [ ] Inspect canonical documentation and visual snapshots; update them only if the public contract or approved appearance changes.
+
+#### Validation
+
+- [ ] Command: `npm test`
+- [ ] Expected result: all generator and hook behavior tests remain green during the browser RED/GREEN cycle.
+- [ ] Command: `npm run test:e2e`
+- [ ] Expected result: every desktop and Pixel 7 journey passes, including the new geometry assertions.
+
+#### Acceptance Criteria
+
+- [ ] The contextual popover has `top >= 16` and `bottom <= viewport height - 16` before and after page scroll.
+- [ ] Tall content scrolls inside the panel rather than extending below the visible viewport.
+- [ ] Escape, outside dismissal, focus restoration, mobile sheets, the broad guide, themes, and existing snapshots remain unchanged.
+
 ## Progress
 
 - [x] Repository and nested instructions read.
@@ -128,6 +154,8 @@ Confirm the green implementation has sound responsibilities, accurate canonical 
 - [x] Milestone 2 completed: responsive contextual help, complete guide, and four desktop/mobile snapshots are green.
 - [x] Milestone 3 started.
 - [x] Milestone 3 completed: design review, documentation reconciliation, and every final validation command passed.
+- [x] Milestone 4 started after reproducing a desktop popover extending 328 pixels below a 720 pixel viewport.
+- [x] Milestone 4 completed: the new geometry journey is green and the complete public checkpoint passes 27 tests with one intentional mobile skip.
 
 ## Decisions
 
@@ -151,6 +179,14 @@ Confirm the green implementation has sound responsibilities, accurate canonical 
   Rationale: `sessionsByRole` and promotion effort project the same canonical counts and must not evolve through duplicated transformations.
   Date/Author: 2026-07-30 / Codex
 
+- Decision: Position desktop contextual help in two layout phases.
+  Rationale: The final width changes line wrapping and therefore panel height. Applying width first, awaiting Vue layout, and only then calculating top uses the rendered dimensions instead of an estimate.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Preserve the prior top during scroll driven remeasurement.
+  Rationale: Removing top during the first layout phase can cause a visible one frame jump even when the final position is correct.
+  Date/Author: 2026-07-30 / Codex
+
 ## Risks and Mitigations
 
 - Risk: Canonical reports vary across archive generations and may omit newer telemetry.
@@ -165,6 +201,9 @@ Confirm the green implementation has sound responsibilities, accurate canonical 
 - Risk: Broad guide content can overflow mobile viewports.
   Mitigation: Use a bounded bottom sheet with internal scrolling, wrapping technical values, and Pixel 7 assertions plus snapshots.
 
+- Risk: A fixed popover can remain inaccessible when its top position and maximum height are calculated independently.
+  Mitigation: Measure the rendered panel, derive placement and available height from one viewport calculation, and repeat it on scroll and resize.
+
 ## Validation Strategy
 
 Each behavior begins with one failing public generator or browser test. Every TDD cycle runs `npm test`; the public `npm run test:e2e` checkpoint runs at least every two cycles and at each milestone boundary. After all behavior and the public checkpoint are green, the design review runs, documentation is reconciled, then the exact final validation sequence runs once from a clean green state.
@@ -178,9 +217,18 @@ Final validation evidence on 2026-07-30:
 5. `git diff --check` passed in the main repository.
 6. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 4 repeated the complete final sequence on 2026-07-30:
+
+1. `npm test` passed all 24 tests.
+2. `npm run prettier:check` passed.
+3. `npm run build` validated 53 reports, regenerated the disposable site projection, and completed successfully. The existing chunk size advisory remained nonblocking.
+4. `npm run test:e2e` passed 27 tests across desktop and Pixel 7; the desktop-only geometry journey was intentionally skipped in the mobile project.
+5. `git diff --check` passed in the main repository.
+6. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+
 ## Documentation Impact
 
-`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
+`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
 
 ## Rollout and Recovery
 
@@ -191,3 +239,6 @@ The site is statically generated. Rollout consists only of later publishing by a
 - The existing website already has a responsive evidence popover whose focus and mobile behavior can inform the reusable help surface, but its promotion copy currently mixes qualification facts with a partial vocabulary lesson.
 - Canonical judge runtime can contain inherited values even when judging is not required, so the public `Not used` state must depend on applicability rather than the mere presence of a runtime object.
 - The post GREEN design review classified duplicated session normalization as a design risk and centralized it. Other possible extractions in the generator were local transformations with no demonstrated independent risk.
+- A 1280 by 720 browser reproduction placed the failure category popover at top 360 and bottom 1048. Its fixed position did not change after page scroll because contextual help used an assumed 360 pixel panel height and registered no scroll repositioning.
+- The first measured positioning correction still overflowed because the panel was measured before its final 400 pixel width changed line wrapping. A two phase layout and border box maximum height are both required to keep the outer panel within the viewport.
+- The corrected desktop snapshot was inspected before replacement. It shows the executor model help fully visible above the lower fact rows; mobile snapshots and the broad guide did not change.
