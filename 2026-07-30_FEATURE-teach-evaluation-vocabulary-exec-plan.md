@@ -157,6 +157,8 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] After the user pushes the instrumentation, download the artifact through the GitHub connector and classify the diff before changing snapshots, fonts, components, or styles.
 - [x] Apply at most a one percent per-snapshot pixel budget only when differences are confined to glyph rasterization and element geometry is identical. Preserve exact comparison for the evidence mark snapshots.
 - [x] Confirm the artifact shows neither missing fonts nor layout changes, so no additional behavior assertion or production correction is required.
+- [x] Record GitHub Actions run `30554147675` as a subsequent public RED: after the first desktop snapshot passed, the previously unreached desktop guide snapshot exposed 99 stable antialiasing pixels with unchanged geometry.
+- [x] Apply the one percent budget to both page screenshot expectations independent of device profile, while preserving exact evidence mark snapshots.
 
 #### Validation
 
@@ -191,6 +193,8 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] Milestone 5 instrumentation completed and locally validated.
 - [x] Milestone 5 artifact inspected and final correction classified as environment-specific glyph and icon rasterization with unchanged geometry.
 - [x] Milestone 5 final correction completed and locally validated.
+- [x] Milestone 5 device-specific policy disproved by run `30554147675`; the failure surfaced sequentially only after the preceding desktop expectation passed.
+- [x] Milestone 5 corrected page-snapshot policy completed and locally validated.
 - [ ] Milestone 5 final correction completed and green in GitHub Actions.
 
 ## Decisions
@@ -231,8 +235,8 @@ Make environment-specific Playwright failures observable before changing screens
   Rationale: The user chose to review and publish the local instrumentation, preserving the existing no-commit and no-push boundary.
   Date/Author: 2026-07-30 / Codex
 
-- Decision: Allow a one percent pixel budget only for the desktop execution facts page and mobile vocabulary guide page.
-  Rationale: Artifact `playwright-test-results-30553266562-1` shows changed pixels only along text glyphs on mobile and the small contextual help icons on desktop. Panel bounds, dividers, positions, wrapping, solid fills, and semantic geometry assertions are unchanged. The opposite device snapshot and the evidence mark snapshots remain exact comparisons.
+- Decision: Allow a one percent pixel budget for both page screenshot expectations in every device profile, while preserving exact evidence mark snapshots.
+  Rationale: Artifact `playwright-test-results-30553266562-1` first showed changed glyph and icon edges in the desktop execution facts page and mobile guide. Run `30554147675` then reached the desktop guide after the preceding expectation passed and exposed another 99 stable antialiasing pixels. The source of nondeterminism is the page-wide rasterization environment, not a particular device profile. Panel bounds, dividers, positions, wrapping, solid fills, and semantic geometry assertions remain unchanged.
   Date/Author: 2026-07-30 / Codex
 
 ## Risks and Mitigations
@@ -301,6 +305,16 @@ Milestone 5 final correction validation on 2026-07-30:
 7. `git diff --check` passed in the main repository.
 8. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 5 corrected page-snapshot policy validation on 2026-07-30:
+
+1. `npm test` passed all 24 tests.
+2. `npm run prettier:check` passed.
+3. `npm run build` validated 53 reports, regenerated the disposable site projection, and completed successfully. The existing chunk size advisory remained nonblocking.
+4. `npm run test:e2e` passed 27 tests across desktop and Pixel 7; the desktop-only geometry journey was intentionally skipped in the mobile project.
+5. The post GREEN design review classified the two unconditional page-snapshot budgets as `No action`: the policy follows the page-wide rendering boundary, remains explicit at each expectation, and leaves evidence mark comparisons exact.
+6. `git diff --check` passed in the main repository.
+7. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+
 ## Documentation Impact
 
 `website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
@@ -319,3 +333,5 @@ The site is statically generated. Rollout consists only of later publishing by a
 - The corrected desktop snapshot was inspected before replacement. It shows the executor model help fully visible above the lower fact rows; mobile snapshots and the broad guide did not change.
 - GitHub Actions run `30550339855` used Ubuntu 24.04 while the committed Linux snapshots were produced in an Ubuntu 22.04 environment. Its final desktop difference was 0.0065 percent and its mobile difference was 0.9246 percent, but the workflow retained no images, so the cause remains deliberately unclassified.
 - GitHub Actions run `30553266562` retained artifact `playwright-test-results-30553266562-1`. Inspection of the expected, actual, and diff PNGs confirmed identical layout geometry: the mobile diff follows glyph antialiasing edges and the desktop diff is limited to 60 pixels around contextual help icons.
+- GitHub Actions run `30554147675` retained artifact `playwright-test-results-30554147675-1`. Its desktop guide expected, actual, and diff PNGs show 99 stable changed pixels along glyph edges with identical layout. The earlier run could not reveal this snapshot because the same test stopped at its preceding failed expectation.
+- A sequence of screenshot expectations can hide later environment differences because Playwright stops the test at the first failed expectation. Visual stability policy should follow the rendering boundary being compared rather than only the device and snapshot combinations observed in the first failing run.
