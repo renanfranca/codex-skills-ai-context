@@ -2,7 +2,7 @@
 
 This ExecPlan is a living document. Keep `Progress`, `Decisions`, `Risks`, and `Lessons Learned` up to date as work advances.
 
-Status: Locally complete; rollout verification pending a user push. The original site was published by 2026-07-29. Milestone 6 made visual snapshot generation and comparison hermetic locally on 2026-07-30. GitHub Actions run `30568924405` then exposed an incompatible Python runtime during rollout, and Milestone 7 now corrects and validates that container runtime locally.
+Status: Milestone 8 locally complete; rollout verification pending a user push. The original site was published by 2026-07-29. Milestones 6 and 7 made visual testing hermetic and corrected the container runtime. GitHub Actions run `30573015827` subsequently completed the build, uploaded the Pages artifact, and deployed successfully. Milestone 8 restores the detailed token and API reference estimate telemetry already present in canonical reports.
 
 ## Purpose / Big Picture
 
@@ -12,11 +12,13 @@ Create a VitePress site under `website/`, published at `https://renanfranca.gith
 
 The work includes an English, mobile-first VitePress site; a deterministic content generator based on existing `evaluation-reports/**/report.json` files; skill and evaluation pages; Prettier, Husky, and lint-staged integration with the repository root; unit and browser tests; and a GitHub Pages workflow.
 
-The work excludes changes to skills, the evaluation runner, evaluation contracts, canonical reports, and the personal `renanfranca.github.io` repository. It also excludes new model sessions and inferred facts that are absent from archived evidence. Milestone 6 adds only the website visual-test runner, its deterministic environment contract, the Pages build environment, regenerated existing snapshots, and contributor documentation. It does not add screenshot tolerance, new screenshot files, a commit, a push, or a deployment.
+The work excludes changes to skills, the evaluation runner, evaluation contracts, canonical reports, and the personal `renanfranca.github.io` repository. It also excludes new model sessions and inferred facts that are absent from archived evidence. Milestone 6 adds only the website visual-test runner, its deterministic environment contract, the Pages build environment, regenerated existing snapshots, and contributor documentation. It does not add screenshot tolerance, new screenshot files, a commit, a push, or a deployment. Milestone 8 projects only token, normalized event, and API reference estimate fields already archived in canonical reports. It does not reconstruct absent values, calculate cache ratios or costs, change report schemas, or modify the runner.
 
 ## Definitions
 
 An evaluation archive is the canonical tree below `evaluation-reports/`. A normalized evaluation is a website-facing representation that preserves source facts and uses `Not recorded` for absent facts. Current promotion, current observations, historical evidence, and no archived evidence are editorial labels used to explain the relationship between a skill and the available reports. A public-path checkpoint exercises the built site with the configured `/codex-skills/` base path.
+
+Token usage is the archived decomposition of input, cached input, output, reasoning output, and total tokens. Cached input is a recorded subset of input tokens. Reasoning output is a recorded subset of output tokens and must not be added to total tokens again. A normalized usage event is one archived telemetry event with its own token decomposition, origin, and scope. An API reference estimate applies an archived dated price table to recorded usage; it is not an observed invoice or ChatGPT charge. A long-context-indeterminate estimate retains a base-rate reference while declaring that the exact value is unavailable because the archived event scope cannot prove whether a higher request-level rate applies.
 
 ## Existing Context
 
@@ -177,6 +179,39 @@ Add the workflow contract assertion first and run `npm test` for the expected RE
 
 The deterministic contract prevents reintroducing `actions/setup-python` into the Jammy job, the workflow verifies and uses the image's system Python, all deterministic tests pass inside the exact CI container, the public checkpoint remains green, and final validation passes.
 
+### Milestone 8 - Restore detailed token telemetry
+
+#### Goal
+
+Let readers inspect every archived token total, normalized usage event, and API reference estimate without changing canonical evidence or inferring facts that were not recorded. Skill promotion panels remain concise, while each report page exposes the complete archived decomposition and limitations.
+
+#### Changes
+
+Extend behavior tests in `website/tests/site-content.test.mjs` with complete, legacy, unavailable, and long-context-indeterminate report scenarios. Require exact preservation of input, cached input, output, reasoning output, and total tokens; token and reasoning completeness; normalized event count, completeness, origin, scope, and per-event token fields; and every archived API reference estimate field including status, exact or base-rate value, currency, components, prices, long-context metadata, and limitations. Missing fields must remain `Not recorded` and must never be derived.
+
+Extend `website/scripts/generate-content.mjs` so its website-facing model carries those fields without modifying report schemas or archives. Show the five token totals, model sessions, duration, usage event count, and API reference estimate value or status in each promotion summary. Add report sections for token usage and API reference estimate, with individual normalized events in a table collapsed by default. For long-context-indeterminate estimates, label the base-rate value as reference only and state that the exact estimate is unavailable.
+
+Extend the existing Playwright journey in `website/e2e/site.spec.mjs` to verify the promotion summary and navigate to the detailed report on desktop and mobile. Preserve exactly the existing eight screenshot files, update a baseline only through the containerized official command if the rendered pixels genuinely change, and inspect every retained diff.
+
+Update `website/scripts/evaluation-glossary.mjs` and `website/README.md` to explain cached input, reasoning output as a subset of output, normalized events, and the distinction between an API reference estimate and an observed charge. Regenerate `website/.generated/` only through the official package command. Reconcile `website/content-config.json` and root repository documentation, recording why unchanged sources remain accurate.
+
+#### Validation
+
+Add one behavior at a time and run the full relevant suite `npm test` for each expected RED and GREEN cycle. Exercise the public checkpoint with `npm run test:e2e` at least every two cycles and at milestone completion. After all behavior is green, load and follow `refactor-design`, preserve public behavior, and rerun both gates.
+
+Run final validation from `website/` in this exact order:
+
+    npm test
+    npm run prettier:check
+    npm run build
+    npm run test:e2e
+
+Finally run `git diff --check` in `/home/renanfranca/.codex/skills` and `git diff --check` in `_temporary/codex-skills-ai-context`.
+
+#### Acceptance Criteria
+
+Complete reports preserve all archived aggregate, event, and estimate fields exactly. Legacy and unavailable reports display `Not recorded` without inferred tokens, ratios, or costs. Long-context-indeterminate reports expose only the archived base-rate reference and clearly state that the exact estimate is unavailable. Promotion summaries remain compact and report pages expose detailed token and estimate sections with events collapsed by default. The desktop and mobile public journeys pass, exactly eight snapshots remain, canonical inputs are unchanged, and all final validation commands are green.
+
 ## Progress
 
 - [x] Create `website/` with Seed4J
@@ -213,7 +248,15 @@ The deterministic contract prevents reintroducing `actions/setup-python` into th
 - [x] Implement and validate the compatible Python workflow
 - [x] Complete Milestone 7 design review and documentation reconciliation
 - [x] Complete Milestone 7 final validation
-- [ ] After a user push, verify that the new workflow run completes `build`, uploads the Pages artifact, and executes `deploy`
+- [x] Verify GitHub Actions run `30573015827` completes `build`, uploads the Pages artifact, and executes `deploy`
+- [x] Start Milestone 8
+- [x] Demonstrate detailed telemetry behavior RED
+- [x] Implement detailed telemetry projection and obtain GREEN
+- [x] Complete Milestone 8 public-path checkpoint
+- [x] Complete Milestone 8 post-GREEN design review
+- [x] Reconcile Milestone 8 canonical documentation
+- [x] Complete Milestone 8 final validation
+- [ ] After a user push, verify the Milestone 8 workflow run completes `build`, uploads the Pages artifact, and executes `deploy`
 
 ## Decisions
 
@@ -272,6 +315,18 @@ The deterministic contract prevents reintroducing `actions/setup-python` into th
 - Decision: Use the system Python shipped by the digest-pinned Jammy image instead of `actions/setup-python`.
   Rationale: The image's Python 3.10.12 is linked against its own glibc 2.35. The setup action selected a Python 3.13.14 toolcache binary linked against glibc 2.38 from the newer host runner, which cannot execute inside Jammy.
   Date/Author: 2026-07-30 / Renan Franca and Codex
+
+- Decision: Preserve every archived telemetry field independently and represent absence with `null` in generated data.
+  Rationale: Event array length, aggregate arithmetic, cache ratios, token subtotals, and monetary values would be derived claims. The site must project canonical evidence rather than repair or strengthen it.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Render long-context-indeterminate amounts as a labeled base-rate reference and never in the exact estimate position.
+  Rationale: Turn scoped normalized events cannot prove whether a request scoped multiplier applies. The archived base rate remains useful only when its limitation is visible beside it.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Share estimate status and decimal formatting between generated report pages and the Vue promotion panel.
+  Rationale: Post-GREEN design review found that two independent formatters could make the summary and detail page disagree, especially for scientific notation or long context status.
+  Date/Author: 2026-07-30 / Codex
 
 ## Risks and Mitigations
 
@@ -389,15 +444,38 @@ Milestone 7 final validation on 2026-07-30 passed in the required order:
 
 An additional full reproduction of the GitHub Actions build job passed inside the exact digest-pinned image. It reported Node 24.18.0 and Python 3.10.12, then completed `npm ci`, all 25 deterministic tests, the production build, and all 27 active Playwright tests with the one expected skip.
 
+Milestone 8 RED evidence was demonstrated in the full `npm test` suite for missing normalized token usage, missing API reference estimate projection, absent report sections, a long context base rate without an explicit reference label, an unavailable estimate without a clear explanation, and missing glossary terms. Each failure named the absent public field or rendered label before its implementation. The legacy scenario then confirmed that the generalized normalization kept unrecorded fields absent rather than deriving them.
+
+Milestone 8 GREEN currently passes 31 deterministic behavior tests. The browser journey opens the validated promotion panel, checks all five token totals, sessions, duration, usage event count, and API reference estimate, follows the report link, confirms both detail sections, and verifies that normalized events are collapsed by default. It passes on desktop Chromium and the Pixel 7 profile.
+
+The first full visual checkpoint after the report sections were added passed 26 tests with one expected skip and changed only `execution-facts-help-desktop-linux.png`. Inspection showed that the help popover and execution facts remained pixel stable; only the visible table of contents gained the new Token usage and API reference estimate headings. The baseline was regenerated through the digest-pinned container. Exactly eight PNG snapshots remain, and the next full checkpoint passed 27 tests with one expected skip.
+
+The Milestone 8 post-GREEN design review classified duplicated estimate status and decimal formatting across `generate-content.mjs` and `EvidenceStatus.vue` as a design risk. `website/scripts/telemetry-format.mjs` now owns that presentation transformation for both paths. The review classified splitting the larger generator and deduplicating synthetic test fixture setup as maintainability opportunities without enough current benefit to expand this milestone. After the refactor, `npm test` passed 31 tests and the public checkpoint passed 27 tests with one expected skip.
+
+Milestone 8 final validation on 2026-07-30 passed in the required order after Prettier corrected the new Playwright journey and the sequence restarted:
+
+- `npm test`: 31 tests passed.
+- `npm run prettier:check`: all matched files use Prettier formatting.
+- `npm run build`: archive validation passed with 53 reports and 1 comparison; generation produced 10 skills and 53 reports; VitePress built successfully with the existing large-chunk warning.
+- `npm run test:e2e`: 27 tests passed with 1 expected project-specific skip in the digest-pinned container.
+- `git diff --check` in `/home/renanfranca/.codex/skills`: passed.
+- `git diff --check` in `_temporary/codex-skills-ai-context`: passed.
+- Exactly eight Playwright PNG snapshots remain, with only the inspected desktop execution-facts help baseline changed.
+- Canonical `evaluation-reports/**`, report schemas, runner sources, `website/content-config.json`, `website/package.json`, and root documentation have no Milestone 8 changes.
+
 ## Documentation Impact
 
 `website/README.md` is the canonical contributor guide for website prerequisites and commands. It now requires Docker for the browser checkpoint, removes the obsolete host Chromium installation, documents the digest-pinned container behavior, gives the public baseline-update command, and restricts `test:e2e:direct` to execution already inside the exact container.
+
+Milestone 8 extends `website/README.md` with the complete projected token decomposition, cached input and reasoning subset rules, normalized event semantics, missing-field policy, API reference estimate meaning, long context limitation, and shared formatter responsibility.
 
 `website/package.json` is the canonical public command configuration. It exposes the container runner as `test:e2e` and the direct Playwright command as `test:e2e:direct`. `.github/workflows/deploy-website.yml` is the canonical publication configuration. It pins the build job to the same image, configures Node 24, verifies the image's compatible system Python, builds once, and invokes the direct checkpoint without installing Chromium.
 
 No Milestone 7 edit to `website/README.md` is needed. Its Python 3 prerequisite remains accurate for host-side archive validation, and its CI section already identifies the digest-pinned image as the shared runtime. The implementation-specific system Python version belongs to the pinned workflow and its executable synchronization contract rather than to the contributor-facing command guide.
 
 The root `README.md` remains accurate without change because its website section only explains how to start Codex in the nested workflow scope; it does not document browser prerequisites or E2E commands. `CODEX_CLI.md`, `EVALUATIONS.md`, and `website/content-config.json` do not describe visual testing or CI runtime and therefore remain unchanged. `website/.generated/` remains a disposable projection and was regenerated only through repository commands, never edited directly.
+
+For Milestone 8, root `README.md` remains accurate because it links to the evidence site without specifying report presentation. `EVALUATIONS.md` and `CODEX_CLI.md` already define cached and reasoning token semantics, missing token behavior, dated pricing, and long context indeterminacy at the canonical evaluation layer; this milestone changes only how the site displays those existing facts. `website/content-config.json` remains accurate because it contains only the public base path and disabled skill catalog entries. `website/package.json` remains accurate because no public command changed. Generated files were refreshed only by `npm run evidence:generate` through build and E2E commands.
 
 ## Rollout and Recovery
 
@@ -429,3 +507,5 @@ GitHub Pages was enabled with GitHub Actions as its publishing source and the pr
 - GitHub Actions run `30568924405` proved that `actions/setup-python` selects binaries according to the GitHub host environment even when steps execute inside an older job container. Python 3.13.14 required glibc 2.38 and could not start on Jammy's glibc 2.35. The pinned Playwright image already includes Python 3.10.12 linked to the correct system libraries.
 - The first post-update exact run passed every screenshot and exposed a separate existing race in the desktop anchored-popover geometry test: `window.scrollBy` inherited smooth scrolling and the assertion sometimes observed the unchanged initial top. The test now requests the same 160-pixel movement instantly and retains its viewport and repositioning assertions.
 - Post-GREEN design review classified early cleanup registration as a design risk: a host build failure occurred before volume creation but still invoked volume removal, which could obscure the original diagnostic. The runner now registers cleanup only after successful volume creation and never lets cleanup failure replace the primary command failure. Image-reference duplication was classified as no action because it crosses shell and GitHub Actions configuration boundaries and is mechanically synchronized.
+- Container runs can leave bind-mounted disposable outputs owned by the user-namespace mapping even when the runner requests the local numeric UID. The host could not change those files directly; the same pinned container running as its remapped root restored permissions for `.generated`, `.vitepress/dist`, and `test-results`. This was an environment residue, not a canonical source change.
+- Report table-of-contents screenshots intentionally include section navigation outside the fixed help popover. Adding report sections can therefore require one inspected baseline update even when the component under test is unchanged.
