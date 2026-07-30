@@ -154,9 +154,9 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] Record GitHub Actions run `30550339855` as the public RED: all semantic and viewport assertions passed, while the desktop execution facts snapshot differed by 60 of 921,600 pixels and the mobile vocabulary guide differed by 3,196 of 345,668 pixels.
 - [x] Give the public path checkpoint a stable step identifier in `.github/workflows/deploy-website.yml`.
 - [x] Add a failure-only `actions/upload-artifact@v6` step that retains `website/test-results` for seven days under a run- and attempt-specific artifact name.
-- [ ] After the user pushes the instrumentation, download the artifact through the GitHub connector and classify the diff before changing snapshots, fonts, components, or styles.
-- [ ] Apply at most a one percent per-snapshot pixel budget only when differences are confined to glyph rasterization and element geometry is identical. Preserve exact comparison for the evidence mark snapshots.
-- [ ] If the artifact shows missing fonts or layout changes, add a behavior assertion for the observed defect and correct that cause instead of adding tolerance.
+- [x] After the user pushes the instrumentation, download the artifact through the GitHub connector and classify the diff before changing snapshots, fonts, components, or styles.
+- [x] Apply at most a one percent per-snapshot pixel budget only when differences are confined to glyph rasterization and element geometry is identical. Preserve exact comparison for the evidence mark snapshots.
+- [x] Confirm the artifact shows neither missing fonts nor layout changes, so no additional behavior assertion or production correction is required.
 
 #### Validation
 
@@ -170,8 +170,8 @@ Make environment-specific Playwright failures observable before changing screens
 
 #### Acceptance Criteria
 
-- [ ] A Playwright failure in GitHub Actions produces a downloadable artifact containing the failure images and trace.
-- [ ] No screenshot baseline, tolerance, font, component, or style changes before the retained diff is inspected.
+- [x] A Playwright failure in GitHub Actions produces a downloadable artifact containing the failure images and trace.
+- [x] No screenshot baseline, tolerance, font, component, or style changes before the retained diff is inspected.
 - [ ] The final visual correction follows the recorded classification and the public checkpoint passes in GitHub Actions.
 
 ## Progress
@@ -189,7 +189,8 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] Milestone 4 completed: the new geometry journey is green and the complete public checkpoint passes 27 tests with one intentional mobile skip.
 - [x] Milestone 5 started after GitHub Actions run `30550339855` exposed stable visual differences without retaining its Playwright artifacts.
 - [x] Milestone 5 instrumentation completed and locally validated.
-- [ ] Milestone 5 artifact inspected and final correction classified.
+- [x] Milestone 5 artifact inspected and final correction classified as environment-specific glyph and icon rasterization with unchanged geometry.
+- [x] Milestone 5 final correction completed and locally validated.
 - [ ] Milestone 5 final correction completed and green in GitHub Actions.
 
 ## Decisions
@@ -228,6 +229,10 @@ Make environment-specific Playwright failures observable before changing screens
 
 - Decision: Keep commit and push outside agent execution for the CI diagnosis.
   Rationale: The user chose to review and publish the local instrumentation, preserving the existing no-commit and no-push boundary.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Allow a one percent pixel budget only for the desktop execution facts page and mobile vocabulary guide page.
+  Rationale: Artifact `playwright-test-results-30553266562-1` shows changed pixels only along text glyphs on mobile and the small contextual help icons on desktop. Panel bounds, dividers, positions, wrapping, solid fills, and semantic geometry assertions are unchanged. The opposite device snapshot and the evidence mark snapshots remain exact comparisons.
   Date/Author: 2026-07-30 / Codex
 
 ## Risks and Mitigations
@@ -285,6 +290,17 @@ Milestone 5 instrumentation validation on 2026-07-30:
 6. `git diff --check` passed in the main repository.
 7. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 5 final correction validation on 2026-07-30:
+
+1. The first `npm run prettier:check` identified only formatting in the changed Playwright expectation. Prettier formatted that file, and the complete validation sequence restarted from the beginning.
+2. `npm test` passed all 24 tests.
+3. `npm run prettier:check` passed.
+4. `npm run build` validated 53 reports, regenerated the disposable site projection, and completed successfully. The existing chunk size advisory remained nonblocking.
+5. `npm run test:e2e` passed 27 tests across desktop and Pixel 7; the desktop-only geometry journey was intentionally skipped in the mobile project.
+6. The post GREEN design review classified the device-specific screenshot options as `No action`: they remain local to the two affected page snapshots, preserve exact comparison in the opposite profiles and for evidence mark snapshots, and introduce no production responsibility or shared state.
+7. `git diff --check` passed in the main repository.
+8. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+
 ## Documentation Impact
 
 `website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, and responsive learning surfaces. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed. `EVALUATIONS.md` remains the detailed canonical contract and already defines executor, judge, sessions, results, persistence, and token semantics; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation.
@@ -302,3 +318,4 @@ The site is statically generated. Rollout consists only of later publishing by a
 - The first measured positioning correction still overflowed because the panel was measured before its final 400 pixel width changed line wrapping. A two phase layout and border box maximum height are both required to keep the outer panel within the viewport.
 - The corrected desktop snapshot was inspected before replacement. It shows the executor model help fully visible above the lower fact rows; mobile snapshots and the broad guide did not change.
 - GitHub Actions run `30550339855` used Ubuntu 24.04 while the committed Linux snapshots were produced in an Ubuntu 22.04 environment. Its final desktop difference was 0.0065 percent and its mobile difference was 0.9246 percent, but the workflow retained no images, so the cause remains deliberately unclassified.
+- GitHub Actions run `30553266562` retained artifact `playwright-test-results-30553266562-1`. Inspection of the expected, actual, and diff PNGs confirmed identical layout geometry: the mobile diff follows glyph antialiasing edges and the desktop diff is limited to 60 pixels around contextual help icons.
