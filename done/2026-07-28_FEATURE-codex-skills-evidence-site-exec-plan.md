@@ -256,7 +256,7 @@ Complete reports preserve all archived aggregate, event, and estimate fields exa
 - [x] Complete Milestone 8 post-GREEN design review
 - [x] Reconcile Milestone 8 canonical documentation
 - [x] Complete Milestone 8 final validation
-- [ ] After a user push, verify the Milestone 8 workflow run completes `build`, uploads the Pages artifact, and executes `deploy`
+- [x] After a user push, verify the Milestone 8 workflow run completes `build`, uploads the Pages artifact, and executes `deploy`
 
 ## Decisions
 
