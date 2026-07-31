@@ -42,24 +42,24 @@ Make the canonical vocabulary and report semantics observable through generated 
 
 #### Changes
 
-- [ ] Add behavior tests in `website/tests/site-content.test.mjs` for schema parity, unknown operations and roles, structured runtime, sessions, failure categories, judge states, and absent telemetry.
-- [ ] Add one central website glossary source and validate its closed taxonomies against canonical schemas and archived reports.
-- [ ] Normalize report data by role without removing compatibility fields.
-- [ ] Render human operation labels across report, skill history, and evaluation history.
-- [ ] Add the operation/result/evidence distinction before skill history.
+- [x] Add behavior tests in `website/tests/site-content.test.mjs` for schema parity, unknown operations and roles, structured runtime, sessions, failure categories, judge states, and absent telemetry.
+- [x] Add one central website glossary source and validate its closed taxonomies against canonical schemas and archived reports.
+- [x] Normalize report data by role without removing compatibility fields.
+- [x] Render human operation labels across report, skill history, and evaluation history.
+- [x] Add the operation/result/evidence distinction before skill history.
 
 #### Validation
 
-- [ ] Command: `npm test`
-- [ ] Expected result: all website generator and hook behavior tests pass.
-- [ ] Command: `npm run test:e2e`
-- [ ] Expected result: the existing public browser checkpoint remains green.
+- [x] Command: `npm test`
+- [x] Expected result: all website generator and hook behavior tests pass.
+- [x] Command: `npm run test:e2e`
+- [x] Expected result: the existing public browser checkpoint remains green.
 
 #### Acceptance Criteria
 
-- [ ] Generated data contains the glossary and structured facts while preserving existing report fields.
-- [ ] Unknown closed taxonomy values fail generation with a precise error.
-- [ ] Generated pages consistently show human operation names and technical commands.
+- [x] Generated data contains the glossary and structured facts while preserving existing report fields.
+- [x] Unknown closed taxonomy values fail generation with a precise error.
+- [x] Generated pages consistently show human operation names and technical commands.
 
 ### Milestone 2 - Deliver responsive contextual learning
 
@@ -69,24 +69,24 @@ Make every execution fact and the complete report vocabulary learnable in place 
 
 #### Changes
 
-- [ ] Add a reusable responsive help component for anchored popovers, mobile sheets, and the broad guide.
-- [ ] Render actionable full labels for every execution fact and add “Learn how to read this report” beside the section heading.
-- [ ] Organize the complete guide into production, operations, execution facts, and observations.
-- [ ] Add browser coverage for pointer, touch, keyboard, Escape, focus, themes, guide completeness, and overflow.
-- [ ] Add the requested desktop and Pixel 7 visual snapshots.
+- [x] Add a reusable responsive help component for anchored popovers, mobile sheets, and the broad guide.
+- [x] Render actionable full labels for every execution fact and add “Learn how to read this report” beside the section heading.
+- [x] Organize the complete guide into production, operations, execution facts, and observations.
+- [x] Add browser coverage for pointer, touch, keyboard, Escape, focus, themes, guide completeness, and overflow.
+- [x] Add the requested desktop and Pixel 7 visual snapshots.
 
 #### Validation
 
-- [ ] Command: `npm test`
-- [ ] Expected result: generator contracts remain green.
-- [ ] Command: `npm run test:e2e`
-- [ ] Expected result: public journeys and visual snapshots pass in desktop and Pixel 7 projects.
+- [x] Command: `npm test`
+- [x] Expected result: generator contracts remain green.
+- [x] Command: `npm run test:e2e`
+- [x] Expected result: public journeys and visual snapshots pass in desktop and Pixel 7 projects.
 
 #### Acceptance Criteria
 
-- [ ] Desktop help is anchored and mobile help is a scrollable bottom sheet.
-- [ ] The complete guide includes taxonomy values absent from the current report and defines the evaluation runner.
-- [ ] Interactive controls are not nested inside links or dialogs.
+- [x] Desktop help is anchored and mobile help is a scrollable bottom sheet.
+- [x] The complete guide includes taxonomy values absent from the current report and defines the evaluation runner.
+- [x] Interactive controls are not nested inside links or dialogs.
 
 ### Milestone 3 - Review design, reconcile documentation, and validate
 
@@ -96,26 +96,26 @@ Confirm the green implementation has sound responsibilities, accurate canonical 
 
 #### Changes
 
-- [ ] Run the `refactor-design` review after unit and public checkpoints are green.
-- [ ] Apply only demonstrated behavior-preserving structural improvements.
-- [ ] Update `website/README.md` for the glossary and generated data contract.
-- [ ] Inspect `website/content-config.json`, root `README.md`, `CODEX_CLI.md`, and `EVALUATIONS.md`; update only sources whose public contract changed and record concrete no-change reasons for the rest.
+- [x] Run the `refactor-design` review after unit and public checkpoints are green.
+- [x] Apply only demonstrated behavior-preserving structural improvements.
+- [x] Update `website/README.md` for the glossary and generated data contract.
+- [x] Inspect `website/content-config.json`, root `README.md`, `CODEX_CLI.md`, and `EVALUATIONS.md`; update only sources whose public contract changed and record concrete no-change reasons for the rest.
 
 #### Validation
 
-- [ ] Command from `website/`: `npm test`
-- [ ] Command from `website/`: `npm run prettier:check`
-- [ ] Command from `website/`: `npm run build`
-- [ ] Command from `website/`: `npm run test:e2e`
+- [x] Command from `website/`: `npm test`
+- [x] Command from `website/`: `npm run prettier:check`
+- [x] Command from `website/`: `npm run build`
+- [x] Command from `website/`: `npm run test:e2e`
 - [x] Command from repository root: `git diff --check`
 - [x] Command from memory worktree: `git diff --check`
-- [ ] Expected result: every command exits zero in the stated order.
+- [x] Expected result: every command exits zero in the stated order.
 
 #### Acceptance Criteria
 
-- [ ] Design review records its findings and any refactors.
-- [ ] Every canonical documentation source has an update or explicit no-change justification.
-- [ ] All final validation commands pass in order.
+- [x] Design review records its findings and any refactors.
+- [x] Every canonical documentation source has an update or explicit no-change justification.
+- [x] All final validation commands pass in order.
 
 ### Milestone 4 - Keep contextual popovers inside the viewport
 
@@ -125,23 +125,23 @@ Correct the desktop positioning defect discovered after the initial implementati
 
 #### Changes
 
-- [ ] Add one browser behavior test in `website/e2e/site.spec.mjs` that opens the tallest field taxonomy near the viewport bottom, verifies the complete panel bounds, scrolls the page, and verifies the bounds again.
-- [ ] Replace the assumed 360 pixel height in `website/.vitepress/theme/EvaluationHelp.vue` with positioning based on the rendered panel height and the available viewport.
-- [ ] Reuse the established promotion popover positioning behavior where its semantics match, without coupling the two dialogs or changing mobile sheets and the broad guide.
-- [ ] Inspect canonical documentation and visual snapshots; update them only if the public contract or approved appearance changes.
+- [x] Add one browser behavior test in `website/e2e/site.spec.mjs` that opens the tallest field taxonomy near the viewport bottom, verifies the complete panel bounds, scrolls the page, and verifies the bounds again.
+- [x] Replace the assumed 360 pixel height in `website/.vitepress/theme/EvaluationHelp.vue` with positioning based on the rendered panel height and the available viewport.
+- [x] Reuse the established promotion popover positioning behavior where its semantics match, without coupling the two dialogs or changing mobile sheets and the broad guide.
+- [x] Inspect canonical documentation and visual snapshots; update them only if the public contract or approved appearance changes.
 
 #### Validation
 
-- [ ] Command: `npm test`
+- [x] Command: `npm test`
 - [x] Expected result: all generator and hook behavior tests remain green during the browser RED/GREEN cycle.
-- [ ] Command: `npm run test:e2e`
-- [ ] Expected result: every desktop and Pixel 7 journey passes, including the new geometry assertions.
+- [x] Command: `npm run test:e2e`
+- [x] Expected result: every desktop and Pixel 7 journey passes, including the new geometry assertions.
 
 #### Acceptance Criteria
 
-- [ ] The contextual popover has `top >= 16` and `bottom <= viewport height - 16` before and after page scroll.
-- [ ] Tall content scrolls inside the panel rather than extending below the visible viewport.
-- [ ] Escape, outside dismissal, focus restoration, mobile sheets, the broad guide, themes, and existing snapshots remain unchanged.
+- [x] The contextual popover has `top >= 16` and `bottom <= viewport height - 16` before and after page scroll.
+- [x] Tall content scrolls inside the panel rather than extending below the visible viewport.
+- [x] Escape, outside dismissal, focus restoration, mobile sheets, the broad guide, themes, and existing snapshots remain unchanged.
 
 ### Milestone 5 - Preserve and diagnose CI visual differences
 
@@ -168,13 +168,13 @@ Make environment-specific Playwright failures observable before changing screens
 - [x] Command from `website/`: `npm run test:e2e`
 - [x] Command from repository root: `git diff --check`
 - [x] Command from memory worktree: `git diff --check`
-- [ ] Expected result: every local command exits zero, then a user-pushed GitHub Actions run retains Playwright diagnostics if the visual checkpoint still fails.
+- [x] Expected result: every local command exits zero, then a user-pushed GitHub Actions run retains Playwright diagnostics if the visual checkpoint still fails.
 
 #### Acceptance Criteria
 
 - [x] A Playwright failure in GitHub Actions produces a downloadable artifact containing the failure images and trace.
 - [x] No screenshot baseline, tolerance, font, component, or style changes before the retained diff is inspected.
-- [ ] The final visual correction follows the recorded classification and the public checkpoint passes in GitHub Actions.
+- [x] The final visual correction follows the recorded classification and the public checkpoint passes in GitHub Actions.
 
 ### Milestone 6 - Restore code contrast in both themes
 
@@ -239,6 +239,59 @@ Restore the model session semantics lost in commit `52f6416c` and make the centr
 - [x] Only the two existing vocabulary guide snapshots change, and their visual differences contain only the restored explanation.
 - [x] No generated projection, archived report, schema, public configuration, or unrelated component changes.
 
+### Milestone 8 - Keep the public workflow inside the Playwright container contract
+
+#### Goal
+
+Restore the public GitHub Actions checkpoint after the visual environment was made hermetic. The workflow must use the Python already present in the digest-pinned Playwright container instead of installing a separate host toolchain that is incompatible with container execution.
+
+#### Changes
+
+- [x] Update `.github/workflows/deploy-website.yml` to replace `actions/setup-python@v6` with an explicit `python3 --version` verification step inside the container.
+- [x] Update `website/tests/visual-environment.test.mjs` so deterministic tests reject reintroducing `actions/setup-python` and require the container Python verification.
+- [x] Leave website user behavior, generated content, visual baselines, and archived reports unchanged.
+
+#### Validation
+
+- [x] Public GitHub Actions run `30573015827` for commit `e15bdb8b6f2e1b585d39a040a0c8edf76c7d9461` completed successfully on 2026-07-30.
+- [x] The run passed `Verify container Python`, deterministic website tests, website build, public path checkpoints, and GitHub Pages deploy.
+
+#### Acceptance Criteria
+
+- [x] The workflow stays in the same pinned Playwright container for Python-dependent archive validation.
+- [x] Public path checkpoints pass in GitHub Actions.
+- [x] No local-only Python setup remains in the public website workflow.
+
+### Milestone 9 - Restore detailed token telemetry
+
+#### Goal
+
+Restore detailed usage telemetry that was collapsed by the vocabulary implementation. The promotion panel and generated report pages must preserve recorded input, cached input, output, reasoning output, total token, event, and API reference estimate facts without inventing missing data.
+
+#### Changes
+
+- [x] Expand `website/tests/site-content.test.mjs` to require detailed aggregate telemetry, normalized usage events, API reference estimate status, missing legacy telemetry semantics, and compatibility fields.
+- [x] Update `website/scripts/generate-content.mjs` to project archived usage decomposition, normalized usage events, and API reference estimate details into generated report data and Markdown.
+- [x] Add `website/scripts/telemetry-format.mjs` and reuse it from generated content and `website/.vitepress/theme/EvidenceStatus.vue`.
+- [x] Extend `website/scripts/evaluation-glossary.mjs` with cached input token, reasoning output token, normalized usage event, and API reference estimate definitions.
+- [x] Update the promotion panel in `website/.vitepress/theme/EvidenceStatus.vue` to show the detailed effort fields.
+- [x] Extend `website/e2e/site.spec.mjs` and update only the existing desktop execution-facts snapshot after confirming the visual difference is the restored telemetry content.
+- [x] Update `website/README.md`; leave root documentation, schemas, generated projections, archived reports, and public configuration unchanged.
+
+#### Validation
+
+- [x] Local validation for commit `bb07451395d77ca8e3d592d194f7a4f8da5ff3a5` passed before publication: `npm test`, `npm run prettier:check`, `npm run build`, `npm run test:e2e`, repository `git diff --check`, and memory worktree `git diff --check`.
+- [x] Public GitHub Actions run `30588390616` for commit `bb07451395d77ca8e3d592d194f7a4f8da5ff3a5` completed successfully on 2026-07-30.
+- [x] The run passed deterministic website tests, website build, public path checkpoints, skipped failure artifact upload because Playwright passed, and deployed GitHub Pages.
+
+#### Acceptance Criteria
+
+- [x] Token totals show recorded workload while cached input remains a subset of input and reasoning output remains a subset of output.
+- [x] Legacy or absent telemetry renders as `Not recorded` instead of inferred zeroes or reconstructed costs.
+- [x] API reference estimates remain explicitly labeled as reference estimates, not observed charges or invoices.
+- [x] Promotion panel and report pages share formatting behavior for estimate values and statuses.
+- [x] The final public checkpoint and deploy are green in GitHub Actions.
+
 ## Progress
 
 - [x] Repository and nested instructions read.
@@ -258,11 +311,16 @@ Restore the model session semantics lost in commit `52f6416c` and make the centr
 - [x] Milestone 5 final correction completed and locally validated.
 - [x] Milestone 5 device-specific policy disproved by run `30554147675`; the failure surfaced sequentially only after the preceding desktop expectation passed.
 - [x] Milestone 5 corrected page-snapshot policy completed and locally validated.
-- [ ] Milestone 5 final correction completed and green in GitHub Actions.
+- [x] Milestone 5 final correction completed and green in GitHub Actions in run `30556148297`.
 - [x] Milestone 6 started after measuring approximately 1.18:1 contrast for light theme inline code and 2.47:1 for unhighlighted block lines.
 - [x] Milestone 6 completed: computed contrast, expansion, overflow, both themes, and the complete local validation sequence are green.
 - [x] Milestone 7 started after confirming commit `52f6416c` replaced the complete model session explanation with a shorter qualification-specific sentence.
 - [x] Milestone 7 completed: the complete canonical model session definition now comes from the serialized glossary and is rendered consistently in all three public surfaces.
+- [x] Milestone 8 started after the hermetic visual environment reached the public workflow but exposed that `actions/setup-python@v6` did not fit the containerized job.
+- [x] Milestone 8 completed: the workflow now verifies the container Python and public run `30573015827` passed build, checkpoints, and deploy.
+- [x] Milestone 9 started after the restored vocabulary still left detailed token usage and API reference estimate facts collapsed.
+- [x] Milestone 9 completed: detailed token telemetry is restored across generated report data, report Markdown, promotion help, glossary definitions, README documentation, local validation, and public run `30588390616`.
+- [x] ExecPlan finalized on 2026-07-31 after confirming `main` equals `origin/main`, the main worktree is clean, the memory worktree is clean before final edits, and the latest public workflow is green.
 
 ## Decisions
 
@@ -322,6 +380,18 @@ Restore the model session semantics lost in commit `52f6416c` and make the centr
   Rationale: The post GREEN design review classified their repetition as a maintainability opportunity because the same contract could drift between the promotion panel, contextual help, and guide. The helper changes no production topology or observable behavior.
   Date/Author: 2026-07-30 / Codex
 
+- Decision: Use the Python executable bundled in the pinned Playwright container for the public workflow.
+  Rationale: Installing a separate Python toolchain inside the container introduced an environment mismatch while archive validation only needs a working `python3` in the same runtime that runs the website build and Playwright checkpoint.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Add a small shared telemetry formatter instead of formatting API reference estimates separately in generated Markdown and Vue.
+  Rationale: Report pages and the interactive promotion panel must agree on recorded decimal display, unavailable statuses, and base-rate reference wording without duplicating business rules.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: Preserve normalized usage event detail rather than deriving a simplified cost view.
+  Rationale: The website is an evidence viewer. It must report archived workload and reference estimates exactly enough to audit them, while avoiding false precision about billing or missing telemetry.
+  Date/Author: 2026-07-30 / Codex
+
 ## Risks and Mitigations
 
 - Risk: Canonical reports vary across archive generations and may omit newer telemetry.
@@ -353,6 +423,15 @@ Restore the model session semantics lost in commit `52f6416c` and make the centr
 
 - Risk: Listing `Executed sessions` both as production vocabulary and as an execution fact duplicates the model session definition in the complete guide.
   Mitigation: Keep the entry only in “How an evaluation is produced” while retaining contextual help on the report fact itself.
+
+- Risk: A host-oriented setup action can drift away from the pinned browser container and make the GitHub Actions checkpoint fail for reasons local Docker validation cannot reproduce.
+  Mitigation: Keep the workflow inside the pinned Playwright container and assert that `actions/setup-python` is absent from the workflow.
+
+- Risk: Detailed telemetry can be misread as billing data or double-counted when cached input and reasoning output are displayed alongside totals.
+  Mitigation: Document and test that cached input is a subset of input, reasoning output is a subset of output, and API reference estimates are not observed charges.
+
+- Risk: Legacy reports without normalized usage events can appear to have zero usage if the generator fills missing values.
+  Mitigation: Preserve missing telemetry as `Not recorded` and test absent event, aggregate, and estimate fields explicitly.
 
 ## Validation Strategy
 
@@ -442,9 +521,27 @@ Milestone 7 final validation on 2026-07-30:
 5. `git diff --check` passed in the main repository.
 6. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
 
+Milestone 8 public validation on 2026-07-30:
+
+1. GitHub Actions run `30573015827` executed commit `e15bdb8b6f2e1b585d39a040a0c8edf76c7d9461`.
+2. The build job passed `Verify container Python`, dependency installation, deterministic website tests, website build, and public path checkpoints.
+3. The Playwright diagnostics upload step was skipped because the public checkpoint passed.
+4. The deploy job completed successfully.
+
+Milestone 9 final validation on 2026-07-30:
+
+1. Local final `npm test` passed all deterministic website tests.
+2. Local final `npm run prettier:check` passed.
+3. Local final `npm run build` validated archived reports, regenerated disposable projections, and completed successfully with the existing nonblocking chunk size advisory.
+4. Local final `npm run test:e2e` passed the public desktop Chromium and Pixel 7 journeys.
+5. `git diff --check` passed in the main repository.
+6. `git -C _temporary/codex-skills-ai-context diff --check` passed in the memory worktree.
+7. GitHub Actions run `30588390616` executed commit `bb07451395d77ca8e3d592d194f7a4f8da5ff3a5`.
+8. The public run passed deterministic website tests, website build, public path checkpoints, skipped failure artifact upload because Playwright passed, uploaded the Pages artifact, and deployed successfully.
+
 ## Documentation Impact
 
-`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, responsive learning surfaces, and the complete canonical model session definition. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. Milestone 6 repairs the existing readable report presentation and changes no generated data, contributor command, configuration, or user workflow, so it requires no README prose or screenshot baseline update; computed contrast is the canonical regression check. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed and it already states that deterministic cases consume no model sessions. `EVALUATIONS.md` remains the detailed canonical contract and already defines the fresh ephemeral executor, separate judge, `codex exec --json` invocation, model sessions, results, persistence, and zero-session deterministic behavior; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation. Milestone 7 leaves generated projections, archived reports, and `website/content-config.json` untouched.
+`website/README.md` now documents the central glossary, independent concepts, structured generated data, precise missing and judge semantics, responsive learning surfaces, the complete canonical model session definition, detailed token telemetry, normalized usage events, API reference estimates, and the shared telemetry formatter. Milestone 4 requires no further README change because it repairs the existing promise that desktop help is an anchored popover and does not add configuration or user workflow. Milestone 5 changes only the applicable public workflow configuration by retaining failure diagnostics; it does not change the website's user behavior, contributor commands, generated data, or public contract, so no prose documentation changes are required. Milestone 6 repairs the existing readable report presentation and changes no generated data, contributor command, configuration, or user workflow, so it requires no README prose or screenshot baseline update; computed contrast is the canonical regression check. Milestone 8 changes the public workflow implementation but not contributor commands because `npm run test:e2e` already owns the pinned local container path; deterministic workflow tests cover the public contract. `website/content-config.json` remains accurate without changes because the base route and disabled skill selection did not change. Root `README.md` remains accurate because repository navigation and the website workflow entry point did not change. `CODEX_CLI.md` remains accurate because no CLI or runner operation changed and it already states that deterministic cases consume no model sessions. `EVALUATIONS.md` remains the detailed canonical contract and already defines the fresh ephemeral executor, separate judge, `codex exec --json` invocation, model sessions, token usage, API reference estimates, results, persistence, and zero-session deterministic behavior; the website translates that contract without changing it. `develop-skill-with-evals/references/eval-report.schema.json` and `eval-result.schema.json` remain unchanged canonical schemas consumed for parity validation. Milestones 7 through 9 leave generated projections, archived reports, schemas, root documentation, and `website/content-config.json` untouched.
 
 ## Rollout and Recovery
 
@@ -466,3 +563,6 @@ The site is statically generated. Rollout consists only of later publishing by a
 - Inline code and code block fallback text use separate VitePress variables. Correcting only `--vp-code-color` leaves unstyled fragment lines and language identifiers on their previous low-contrast fallbacks.
 - A rootless Vue renderer can preserve surrounding paragraph and definition-list semantics while selectively emitting the glossary's structured code segment. Sharing the full entry object keeps plain serialization and rendered prose aligned.
 - Opening an additional mobile contextual-help sheet changes the underlying page scroll position before the guide screenshot. Explicitly restoring the “Execution facts” heading position keeps the snapshot focused on guide content rather than an incidental journey scroll.
+- The pinned Playwright container already contains the Python runtime needed by archive validation. Adding a host setup action inside the container adds a failure mode without improving reproducibility.
+- The vocabulary implementation initially restored human explanations but underrepresented workload evidence. Token telemetry needs its own contract because cached input, reasoning output, event completeness, and API reference estimates have distinct audit meanings.
+- API reference amounts can be small enough for JavaScript to serialize in scientific notation. Evidence pages should preserve recorded decimal readability when presenting money-like reference values.
