@@ -99,6 +99,34 @@ Review the green implementation for structural risk, reconcile all declared cano
 - [x] Every canonical documentation source has an explicit disposition.
 - [x] The complete final validation sequence is green.
 
+### Milestone 4 - Stabilize the visual checkpoint in CI
+
+#### Goal
+
+Make every existing stepper screenshot observe a neutral component state, independently from the keyboard focus and pointer states exercised by the same journey. GitHub Actions run `30754059367` and the subsequent focused experiments provide the RED evidence: the visual assertion captures the component after interaction has activated hover and focus presentation, so the snapshot can retain those transient pixels even after computed CSS values appear neutral.
+
+#### Changes
+
+- [x] Update `website/e2e/site.spec.mjs` to scroll the stepper into view, move the pointer outside it, assert that no stage link matches `:hover`, and capture the existing light snapshot.
+- [x] Switch theme, close mobile navigation when applicable, and capture the existing dark snapshot before any keyboard focus interaction.
+- [x] Exercise Tab and Shift+Tab focus plus the visible outline only after both neutral snapshots, then continue the Judge-disabled and overflow scenarios.
+- [x] Preserve HTML, CSS, dependencies, hover styling, public behavior, and the three already-neutral screenshot baselines; replace only the contaminated mobile light baseline with the verified neutral capture.
+- [x] Do not use `blur()`, fixed waits, CSS polling, or pixel tolerance. Regenerate only the mobile project and accept no baseline diff beyond `evaluation-flow-mobile-linux.png`.
+- [x] Leave canonical documentation unchanged because no page content, configuration, command, architecture, or evaluation semantics change.
+
+#### Validation
+
+- [x] Command: `npm test` passed all 37 tests.
+- [x] Command: targeted `npm run test:e2e -- --grep "evaluation pages separate current evidence"` passed desktop and mobile without update mode.
+- [x] Command: `npm run test:e2e` passed 32 tests with 2 expected skips.
+- [x] Expected result: the targeted test and full suite pass in the same pinned Playwright container used by CI after the single authorized baseline correction.
+
+#### Acceptance Criteria
+
+- [x] Light and dark screenshots are captured before focus interaction and with no hovered stage link.
+- [x] Keyboard focus and its visible outline remain covered independently after visual capture.
+- [x] All four stepper snapshots and the complete public suite pass, with only the contaminated mobile light baseline changed.
+
 ## Progress
 
 - [x] Repository and nested instructions read; workflow profile confirmed.
@@ -109,6 +137,17 @@ Review the green implementation for structural risk, reconcile all declared cano
 - [x] Milestone 2 completed: four snapshots were inspected and the complete public checkpoint passed 32 tests with 2 expected skips.
 - [x] Milestone 3 started.
 - [x] Milestone 3 completed.
+- [x] Milestone 4 started after GitHub Actions run `30754059367` failed reproducibly.
+- [x] Milestone 4 completed.
+- [x] Milestone 4 exception gate resolved by separating neutral snapshots from interaction assertions instead of attempting transition teardown.
+- [x] `npm test` passed all 37 tests after phase separation.
+- [x] Targeted pinned-container checkpoint recorded the resolved block: desktop passed, but the neutral mobile light capture differed from its existing baseline by 84 pixels around node 01 even with no focused stage and `a:hover` count zero.
+- [x] User authorized replacing only the contaminated mobile light baseline after reviewing why the visual and interaction checks remain necessary.
+- [x] Targeted pinned-container checkpoint passed in desktop and mobile without update mode after the authorized baseline replacement.
+- [x] Complete public checkpoint passed 32 tests with 2 expected mobile skips.
+- [x] Post-GREEN `refactor-design` review completed with No action.
+- [x] Canonical documentation reconciled with no prose or configuration changes required.
+- [x] Ordered final validation completed after correcting the single Prettier formatting finding and restarting the sequence from `npm test`.
 
 ## Decisions
 
@@ -132,6 +171,22 @@ Review the green implementation for structural risk, reconcile all declared cano
   Rationale: The changed generator data is local, ordered, and explicit; the CSS now has separate definition and operation boundaries; and no temporal coupling, hidden state, fragile mapping, duplicated transformation, or mixed policy creates a concrete risk. New helpers or constants would add indirection without strengthening an invariant.
   Date/Author: 2026-08-02 / Codex
 
+- Decision: Normalize pointer state in the E2E journey and preserve strict screenshot thresholds.
+  Rationale: Hover is intentional public behavior, while cursor position is incidental test state. Moving the cursor to a verified point outside the component and asserting no stage is hovered makes the captured state explicit without weakening comparison.
+  Date/Author: 2026-08-02 / Codex
+
+- Decision: Capture neutral snapshots before keyboard interaction and test focus afterward.
+  Rationale: Playwright already disables finite animations for screenshots and waits for consecutive stable captures. The failure is phase contamination, not insufficient CSS waiting: separating visual and interaction assertions removes the teardown dependency without manual waits, CSS polling, tolerance, or unnecessary baseline changes.
+  Date/Author: 2026-08-02 / Codex
+
+- Decision: Replace only `evaluation-flow-mobile-linux.png` with its neutral capture.
+  Rationale: Expected-versus-actual inspection proves the existing file contains the 84-pixel residual focus transition around node 01. The user explicitly authorized correcting this one contaminated contract while keeping the other three baselines unchanged.
+  Date/Author: 2026-08-02 / Codex
+
+- Decision: Classify the Milestone 4 post-GREEN design review as No action.
+  Rationale: The change only orders existing public assertions into neutral visual and keyboard interaction phases. Pointer normalization is local to the single journey, introduces no production responsibility or hidden mutable state, and extracting a helper would add indirection without removing a demonstrated risk.
+  Date/Author: 2026-08-02 / Codex
+
 ## Risks and Mitigations
 
 - Risk: VitePress list styling may reveal decimal markers.
@@ -146,9 +201,20 @@ Review the green implementation for structural risk, reconcile all declared cano
 - Risk: Snapshot updates could mask unrelated visual regressions.
   Mitigation: Scope screenshots to `.definition-flow`, inspect new images, and keep the scenario fixed to the complete six-stage flow.
 
+- Risk: Pointer state from earlier navigation can activate hover styling during a screenshot.
+  Mitigation: After scrolling the target into view, choose a viewport corner outside its bounding box, move the pointer there, assert that no stage link matches `:hover`, and retain zero visual-difference tolerance.
+
+- Risk: Focus interaction in the same journey can contaminate a later neutral snapshot even after attempted teardown.
+  Mitigation: Capture both theme snapshots before pressing Tab or Shift+Tab. Verify focus and outline afterward without `blur()` or transition-settling logic.
+
+- Risk: The existing mobile light baseline itself contains the 84-pixel residual focus transition around node 01.
+  Mitigation: User authorized replacing only that file. Run update mode against the targeted mobile project, then verify the repository diff before accepting it and rerun without update mode.
+
 ## Validation Strategy
 
 Use `npm test` for every RED and GREEN cycle. After generator and CSS behavior are complete, run `npm run test:e2e` as the public checkpoint. Inspect targeted screenshots in light and dark themes. After the post-GREEN design review and documentation reconciliation, run exactly `npm test`, `npm run prettier:check`, `npm run build`, and `npm run test:e2e` from `website/`.
+
+Milestone 4 final validation on 2026-08-02 completed in the required order: `npm test` passed 37 tests; `npm run prettier:check` reported all matched files use Prettier style; `npm run build` validated 53 reports, generated 10 skills and 53 reports, and completed the VitePress build; `npm run test:e2e` passed 32 tests with 2 expected skips. The first ordered attempt stopped when Prettier requested one mechanical line-wrap change in `site.spec.mjs`; after applying that exact formatting, the complete sequence restarted from the first command and passed.
 
 ## Documentation Impact
 
@@ -158,6 +224,7 @@ Use `npm test` for every RED and GREEN cycle. After generator and CSS behavior a
 - Root `CODEX_CLI.md`: inspected and left unchanged because skill discovery, CLI operation, and user workflows are unaffected.
 - Root `EVALUATIONS.md`: inspected and left unchanged because Prompt, Fixture, Executor, Mechanical checks, Oracle, Judge, and result semantics are unchanged; only their generated website navigation presentation changed.
 - `website/scripts/generate-content.mjs` and `website/.vitepress/theme/custom.css` are the canonical code sources for generated page markup and presentation. `website/.generated/` will remain an unedited projection.
+- CI stabilization follow-up: all sources above remain unchanged because only the ordering and state isolation of existing Playwright assertions change.
 
 ## Rollout and Recovery
 
@@ -168,3 +235,9 @@ The static site build is the rollout artifact. There is no data migration or run
 - The current definition and latest operation flows share `.evaluation-flow` even though they represent different concepts; preserving `.definition-flow` while separating their styling is the narrowest compatible boundary.
 - The first public RED failed on the computed native list style (`decimal`), proving that the VitePress reset needed a dedicated high-specificity rule rather than relying on the old shared flow styles.
 - A mobile dark-theme screenshot must close VitePress's navigation drawer after using its appearance switch; otherwise the drawer can cover a correctly rendered target and produce a misleading snapshot.
+- A locator screenshot preserves page hover state. Navigation can leave the desktop pointer over a later target even after keyboard focus is blurred, so deterministic visual tests must normalize both focus and pointer state.
+- Moving the pointer to `(0, 0)` activated the first mobile node after Playwright scrolled the locator into view. Moving it to the viewport's lower-right corner removed that hover source, but the first node still differed by 84 pixels because its focus transition had not settled. Both experimental edits were removed after the second failed GREEN attempt.
+- After resuming, polling only `transform: none` still left the same 84-pixel mobile difference around node 01. The screenshot proves `box-shadow` can remain interpolated after transform reaches its neutral computed value. That experiment was also removed when the public checkpoint failed.
+- Polling until ordinary nodes had equal computed `transform` and `box-shadow` values also left the same 84-pixel difference. Computed CSS equality does not guarantee that Chromium has discarded a rasterized transition frame before Playwright disables animations. Snapshot capture and focus verification should be ordered as independent assertions instead of coupled through teardown.
+- Separating snapshots from keyboard interaction produced a neutral mobile light image, but it proved the existing `evaluation-flow-mobile-linux.png` baseline contains the residual node 01 focus transition. Expected versus actual inspection localizes all 84 differing pixels to the first node's larger halo and vertical shift. Desktop passed unchanged. Preserving that contaminated baseline and requiring a neutral capture are contradictory constraints.
+- Correcting only the contaminated mobile light baseline made the targeted desktop and mobile journey pass without update mode, and the complete pinned-container suite stayed green. The other three stepper baselines remained byte-for-byte unchanged in the Git diff.
