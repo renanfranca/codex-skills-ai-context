@@ -127,6 +127,31 @@ Make every existing stepper screenshot observe a neutral component state, indepe
 - [x] Keyboard focus and its visible outline remain covered independently after visual capture.
 - [x] All four stepper snapshots and the complete public suite pass, with only the contaminated mobile light baseline changed.
 
+### Milestone 5 - Align connector arrows with the stage nodes
+
+#### Goal
+
+Center every connector line and arrowhead on the same rendered axis as the numbered stage nodes in desktop and mobile layouts. Preserve the directional arrows because the correction is local and their meaning remains useful.
+
+#### Changes
+
+- Extend the existing Playwright journey in `website/e2e/site.spec.mjs` with a browser geometry assertion that compares each connector line and arrowhead axis with its stage node center in both projects.
+- Update only the connector geometry in `website/.vitepress/theme/custom.css`; preserve markup, copy, colors, focus, hover, stage spacing, and result presentation.
+- Regenerate and inspect the four stepper snapshots in the pinned container because the corrected connector pixels intentionally change in both themes and layouts.
+- Leave canonical documentation unchanged because this repairs visual alignment without changing content, configuration, commands, architecture, or evaluation semantics.
+
+#### Validation
+
+- Command: `npm test` for every TDD cycle.
+- RED checkpoint: targeted Playwright journey fails its rendered geometry assertion against the current connector positions.
+- GREEN checkpoint: targeted Playwright journey passes geometry in desktop and mobile, then `npm run test:e2e` passes with the reviewed baselines.
+
+#### Acceptance Criteria
+
+- Desktop connector lines and arrowheads share the horizontal center axis of the numbered nodes.
+- Mobile connector lines and arrowheads share the vertical center axis of the numbered nodes.
+- Arrows remain visible and directional, with no new overflow or accessibility regression.
+
 ## Progress
 
 - [x] Repository and nested instructions read; workflow profile confirmed.
@@ -148,6 +173,16 @@ Make every existing stepper screenshot observe a neutral component state, indepe
 - [x] Post-GREEN `refactor-design` review completed with No action.
 - [x] Canonical documentation reconciled with no prose or configuration changes required.
 - [x] Ordered final validation completed after correcting the single Prettier formatting finding and restarting the sequence from `npm test`.
+- [x] Milestone 5 started after visual inspection confirmed a small axis mismatch caused by independent fixed offsets for nodes, lines, and arrowheads.
+- [x] Milestone 5 RED confirmed in the pinned browser: desktop and mobile connector lines were each 0.5 px off the rendered node center, before the assertion reached the independently offset arrowhead.
+- [x] First GREEN attempt exposed the repository-wide `border-box` sizing invariant: treating the declared 50 px node as content-box moved both connector axes 1 px past center. Corrected the calculation to the rendered 25 px radius for the second attempt.
+- [x] The next targeted run proved the connector line green and exposed the same `border-box` assumption inside the new arrow measurement. Corrected the test to add borders only for content-box pseudo-elements; the second CSS attempt itself remained unchanged.
+- [x] Targeted Playwright geometry passed in desktop and mobile; all four reviewed snapshots were regenerated in the pinned container and passed again without update mode.
+- [x] Complete public checkpoint passed 32 tests with 2 expected mobile skips.
+- [x] Milestone 5 post-GREEN `refactor-design` review completed with No action.
+- [x] Milestone 5 canonical documentation reconciled with no prose or configuration change required.
+- [x] Milestone 5 ordered final validation completed after the single Prettier formatting correction and a full restart from `npm test`.
+- [x] Milestone 5 completed.
 
 ## Decisions
 
@@ -187,6 +222,18 @@ Make every existing stepper screenshot observe a neutral component state, indepe
   Rationale: The change only orders existing public assertions into neutral visual and keyboard interaction phases. Pointer normalization is local to the single journey, introduces no production responsibility or hidden mutable state, and extracting a helper would add indirection without removing a demonstrated risk.
   Date/Author: 2026-08-02 / Codex
 
+- Decision: Keep the directional arrowheads and align them through rendered geometry.
+  Rationale: Numbering already conveys order, but arrows reinforce direction and the defect is local rather than structurally difficult. Browser geometry protects the user-visible invariant without coupling the test to particular CSS declarations.
+  Date/Author: 2026-08-02 / Codex
+
+- Decision: Use the targeted Playwright journey as the RED observation point while still running `npm test` in every cycle.
+  Rationale: The required Node suite does not render CSS pseudo-elements. A static source assertion would test implementation spelling instead of the visible alignment, while Playwright can compare the rendered node, connector, and arrow axes in both declared projects.
+  Date/Author: 2026-08-02 / Codex
+
+- Decision: Classify the Milestone 5 post-GREEN design review as No action.
+  Rationale: The corrected offsets are local to one component and the rendered geometry assertion now protects their relationship. Introducing separate custom properties for node radius, connector half-width, and arrow half-width would add arithmetic indirection without removing the need for orientation-specific positioning or strengthening the observable invariant.
+  Date/Author: 2026-08-02 / Codex
+
 ## Risks and Mitigations
 
 - Risk: VitePress list styling may reveal decimal markers.
@@ -210,11 +257,19 @@ Make every existing stepper screenshot observe a neutral component state, indepe
 - Risk: The existing mobile light baseline itself contains the 84-pixel residual focus transition around node 01.
   Mitigation: User authorized replacing only that file. Run update mode against the targeted mobile project, then verify the repository diff before accepting it and rerun without update mode.
 
+- Risk: Correcting connector geometry changes a small number of pixels in all four visual contracts.
+  Mitigation: Update snapshots only in the pinned Playwright container, inspect every image, and retain strict zero-tolerance comparisons afterward.
+
+- Risk: Magic offsets can drift again when node or connector dimensions change.
+  Mitigation: Assert the rendered axis relationship in desktop and mobile rather than duplicating CSS values in a static test.
+
 ## Validation Strategy
 
 Use `npm test` for every RED and GREEN cycle. After generator and CSS behavior are complete, run `npm run test:e2e` as the public checkpoint. Inspect targeted screenshots in light and dark themes. After the post-GREEN design review and documentation reconciliation, run exactly `npm test`, `npm run prettier:check`, `npm run build`, and `npm run test:e2e` from `website/`.
 
 Milestone 4 final validation on 2026-08-02 completed in the required order: `npm test` passed 37 tests; `npm run prettier:check` reported all matched files use Prettier style; `npm run build` validated 53 reports, generated 10 skills and 53 reports, and completed the VitePress build; `npm run test:e2e` passed 32 tests with 2 expected skips. The first ordered attempt stopped when Prettier requested one mechanical line-wrap change in `site.spec.mjs`; after applying that exact formatting, the complete sequence restarted from the first command and passed.
+
+Milestone 5 final validation on 2026-08-02 completed in the same required order: `npm test` passed 37 tests; `npm run prettier:check` reported all matched files use Prettier style; `npm run build` validated 53 reports, generated 10 skills and 53 reports, and completed the VitePress build; `npm run test:e2e` passed 32 tests with 2 expected skips. The first ordered attempt stopped when Prettier requested one mechanical line-wrap change in the geometry assertion. After that exact formatting correction, the complete sequence restarted from `npm test` and passed.
 
 ## Documentation Impact
 
@@ -225,6 +280,7 @@ Milestone 4 final validation on 2026-08-02 completed in the required order: `npm
 - Root `EVALUATIONS.md`: inspected and left unchanged because Prompt, Fixture, Executor, Mechanical checks, Oracle, Judge, and result semantics are unchanged; only their generated website navigation presentation changed.
 - `website/scripts/generate-content.mjs` and `website/.vitepress/theme/custom.css` are the canonical code sources for generated page markup and presentation. `website/.generated/` will remain an unedited projection.
 - CI stabilization follow-up: all sources above remain unchanged because only the ordering and state isolation of existing Playwright assertions change.
+- Arrow alignment follow-up: all documentation and configuration sources remain unchanged because connector position is a visual correction inside the already documented static responsive flow.
 
 ## Rollout and Recovery
 
@@ -241,3 +297,5 @@ The static site build is the rollout artifact. There is no data migration or run
 - Polling until ordinary nodes had equal computed `transform` and `box-shadow` values also left the same 84-pixel difference. Computed CSS equality does not guarantee that Chromium has discarded a rasterized transition frame before Playwright disables animations. Snapshot capture and focus verification should be ordered as independent assertions instead of coupled through teardown.
 - Separating snapshots from keyboard interaction produced a neutral mobile light image, but it proved the existing `evaluation-flow-mobile-linux.png` baseline contains the residual node 01 focus transition. Expected versus actual inspection localizes all 84 differing pixels to the first node's larger halo and vertical shift. Desktop passed unchanged. Preserving that contaminated baseline and requiring a neutral capture are contradictory constraints.
 - Correcting only the contaminated mobile light baseline made the targeted desktop and mobile journey pass without update mode, and the complete pinned-container suite stayed green. The other three stepper baselines remained byte-for-byte unchanged in the Git diff.
+- The repository's universal `border-box` sizing means the declared 50 px node already includes its border, so its rendered axis is 25 px rather than 26 px. Browser geometry exposed both the original half-pixel line mismatch and an initially incorrect test calculation that counted pseudo-element borders twice.
+- A 2 px connector centered on the 25 px node axis and an 8 px arrowhead positioned from the same axis render cleanly in all four inspected light, dark, desktop, and mobile snapshots.
