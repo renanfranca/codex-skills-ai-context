@@ -55,6 +55,29 @@ Make the generated page omit the latest-operation flow while preserving operatio
 - [ ] Generated active evaluation Markdown retains operation history.
 - [ ] The published page path is covered through the Playwright checkpoint.
 
+### Milestone 2 - Align the public checkpoint
+
+#### Goal
+
+Replace the obsolete Playwright assertion for the removed latest-operation panel with assertions for the retained operation history.
+
+#### Changes
+
+- [ ] Update `website/e2e/site.spec.mjs` so the evaluation-page journey does not look for `.operation-summary` and instead verifies that `Latest operation flow` is absent and `Operation history` remains visible.
+- [ ] Do not modify the generator or restore the removed panel; the CI failure is an obsolete consumer expectation.
+
+#### Validation
+
+- [ ] Command: `npm run test:e2e`
+- [ ] Expected result: the desktop and mobile variants of the evaluation-page journey pass without the removed panel.
+- [ ] Commands, in order: `npm test`, `npm run prettier:check`, `npm run build`, `npm run test:e2e`
+- [ ] Expected result: all final validations pass.
+
+#### Acceptance Criteria
+
+- [ ] Playwright verifies the public page without the latest-operation flow.
+- [ ] Playwright still verifies that operation history is available.
+
 ## Progress
 
 - [x] Applicable repository and website instructions read; memory worktree and origin verified.
@@ -68,6 +91,11 @@ Make the generated page omit the latest-operation flow while preserving operatio
 - [x] Milestone 1 completed.
 - [x] Documentation reconciled.
 - [x] Final validation completed: `npm test`, `npm run prettier:check`, `npm run build`, and `npm run test:e2e` all passed.
+- [x] CI failure inspected: GitHub Actions run 30920999831 shows an obsolete Playwright locator for the removed `.operation-summary` panel.
+- [x] Milestone 2 started.
+- [x] Replaced the obsolete panel assertions with absence of `Latest operation flow` and presence of `Operation history`.
+- [x] Confirmed the targeted desktop and mobile Playwright scenario passes.
+- [x] Milestone 2 completed.
 
 ## Decisions
 
@@ -87,6 +115,8 @@ Make the generated page omit the latest-operation flow while preserving operatio
   Mitigation: direct test temporary files to writable `/tmp` with `TMPDIR=/tmp`.
 - Risk: the build reports pre-existing large JavaScript chunks and the Playwright dependency installation reports three audit findings.
   Mitigation: both are non-blocking warnings outside this narrow removal; no dependency or bundle change was authorized.
+- Risk: local output from the Playwright container can be truncated before its final summary.
+  Mitigation: use the GitHub Actions log and command exit status as the authoritative result, and retain the full public checkpoint in the final validation sequence.
 
 ## Validation Strategy
 
@@ -97,9 +127,15 @@ Make the generated page omit the latest-operation flow while preserving operatio
 
 Validation evidence: on 2026-08-04, `npm test` passed 37 tests; `npm run prettier:check` reported every file formatted; `npm run build` validated the archive, generated 10 skills and 53 reports, and completed the VitePress build; and `npm run test:e2e` completed the packaged Playwright checkpoint. `git diff --check` passed, and the generated `hidden-invocation-state` page contains neither `Latest operation flow` nor `operation-flow`.
 
+After the commit, GitHub Actions run 30920999831 failed its public checkpoint because `website/e2e/site.spec.mjs` still expected the removed `.operation-summary`. The next validation must re-run the exact final sequence after replacing that consumer expectation.
+
+CI-fix validation evidence: `npm test` passed 37 tests, `npm run prettier:check` passed, `npm run build` passed, and the full `npm run test:e2e -- --reporter=dot` result was 32 passed and 2 skipped. The targeted failure scenario also passed in both desktop and mobile projects.
+
 ## Documentation Impact
 
 `website/README.md` is the canonical documentation for this scope. Its statement that pages include latest execution will be changed to state that archived operations are available through operation history. No other canonical documentation source describes this page composition precisely enough to require an update. Generated pages are not documentation sources and will not be edited.
+
+Milestone 2 updates only the test's consumer expectation; no canonical documentation changes are needed because the documented public behavior already describes operation history rather than latest execution.
 
 ## Rollout and Recovery
 
@@ -110,3 +146,4 @@ The existing GitHub Actions website deployment publishes the generated site afte
 - The active evaluation page is a generated projection, so page-level changes belong in `website/scripts/generate-content.mjs`, not in `website/.generated/`.
 - `Ubuntu-Seed4J` already has Node 24.16.0 and npm 11.13.0 through NVM. Its `.bashrc` returns before NVM initialization in a non-interactive shell, so commands must source NVM explicitly or the profile must load it separately.
 - The focused design review classified the only candidate as **No action**: deleting the unused renderer and its dedicated CSS leaves the operation-history contract independent and removes dead presentation code without a new abstraction.
+- The original removal did not update the E2E journey that asserted the now-removed latest-operation summary; generated-content assertions alone did not cover that consumer contract.
