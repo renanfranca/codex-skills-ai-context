@@ -40,19 +40,19 @@ Lead with a generator-level behavioral test, then produce the same semantic qual
 
 #### Changes
 
-- [ ] Add one behavior-focused temporary-workspace test to `website/tests/site-content.test.mjs` that verifies map position, heading, four impacts, gate ordering, static exception, qualification limitation, and the absence of a live-progress claim.
-- [ ] Add `renderPromotionQualificationMap` to `website/scripts/generate-content.mjs` and insert its single call immediately after the evidence callout in `renderSkill`.
-- [ ] Do not edit `website/.generated/`, runner code, schemas, reports, Vue components, or evidence derivation.
+- [x] Add one behavior-focused temporary-workspace test to `website/tests/site-content.test.mjs` that verifies map position, heading, four impacts, gate ordering, static exception, qualification limitation, and the absence of a live-progress claim.
+- [x] Add `renderPromotionQualificationMap` to `website/scripts/generate-content.mjs` and insert its single call immediately after the evidence callout in `renderSkill`.
+- [x] Do not edit `website/.generated/`, runner code, schemas, reports, Vue components, or evidence derivation.
 
 #### Validation
 
-- [ ] Command: `npm test`
-- [ ] Expected result: baseline and new generator behavior tests pass after the initially absent map gives the expected RED.
+- [x] Command: `npm test`
+- [x] Expected result: baseline and new generator behavior tests pass after the initially absent map gives the expected RED.
 
 #### Acceptance Criteria
 
-- [ ] A generated skill page exposes a documentary, non-live four-path map before `Active evaluations`.
-- [ ] `Static` is never presented as producing `Validated promotion`.
+- [x] A generated skill page exposes a documentary, non-live four-path map before `Active evaluations`.
+- [x] `Static` is never presented as producing `Validated promotion`.
 
 ### Milestone 2 - Present and document the map
 
@@ -62,22 +62,22 @@ Lead with the public desktop/mobile journey, then provide responsive, theme-awar
 
 #### Changes
 
-- [ ] Add a Playwright journey in `website/e2e/site.spec.mjs` for always-visible content, two-by-two desktop cards, one-column mobile cards, light/dark readability, no overflow, and text-first comprehension; create `promotion-qualification-map` snapshots in the official Playwright environment.
-- [ ] Add internal `.promotion-qualification-*` styles in `website/.vitepress/theme/custom.css`, using existing text, divider, background, and brand variables without hover or interactive controls.
-- [ ] Update `website/README.md` only with delivered map position, documentary nature, static-versus-validated-promotion distinction, and lack of live tracking.
-- [ ] Inspect `EVALUATIONS.md`, root `README.md`, and applicable public configuration. Leave each unchanged only when it remains accurate and record why.
+- [x] Add a Playwright journey in `website/e2e/site.spec.mjs` for always-visible content, two-by-two desktop cards, one-column mobile cards, light/dark readability, no overflow, and text-first comprehension; create `promotion-qualification-map` snapshots in the official Playwright environment.
+- [x] Add internal `.promotion-qualification-*` styles in `website/.vitepress/theme/custom.css`, using existing text, divider, background, and brand variables without hover or interactive controls.
+- [x] Update `website/README.md` only with delivered map position, documentary nature, static-versus-validated-promotion distinction, and lack of live tracking.
+- [x] Inspect `EVALUATIONS.md`, root `README.md`, and applicable public configuration. Leave each unchanged only when it remains accurate and record why.
 
 #### Validation
 
-- [ ] Command: `npm test`
-- [ ] Expected result: generator behavior remains green.
-- [ ] Command: `npm run test:e2e`
-- [ ] Expected result: public desktop/mobile journey and official snapshots pass.
+- [x] Command: `npm test`
+- [x] Expected result: generator behavior remains green.
+- [x] Command: `npm run test:e2e`
+- [x] Expected result: public desktop/mobile journey and official snapshots pass.
 
 #### Acceptance Criteria
 
-- [ ] The map is visible without opening a panel, works in both themes, is responsive, and has no horizontal overflow.
-- [ ] Documentation describes only the delivered static behavior.
+- [x] The map is visible without opening a panel, works in both themes, is responsive, and has no horizontal overflow.
+- [x] Documentation describes only the delivered static behavior.
 
 ### Milestone 3 - Review, reconcile, and validate
 
@@ -87,16 +87,16 @@ Use `refactor-design` only after both behavior and public-path gates are green, 
 
 #### Changes
 
-- [ ] Inspect only altered generator, tests, CSS, and README for structural risks; make any behavior-preserving refactor that has concrete evidence.
-- [ ] Reconcile all canonical documentation sources and update this plan with exact results, decisions, risks, and recovery details.
+- [x] Inspect only altered generator, tests, CSS, and README for structural risks; make any behavior-preserving refactor that has concrete evidence.
+- [x] Reconcile all canonical documentation sources and update this plan with exact results, decisions, risks, and recovery details.
 
 #### Validation
 
-- [ ] Command: `npm test`
-- [ ] Command: `npm run prettier:check`
-- [ ] Command: `npm run build`
-- [ ] Command: `npm run test:e2e`
-- [ ] Expected result: all commands pass in that order from `website/`.
+- [x] Command: `npm test`
+- [x] Command: `npm run prettier:check`
+- [x] Command: `npm run build`
+- [x] Command: `npm run test:e2e`
+- [x] Expected result: all commands pass in that order from `website/`.
 
 #### Acceptance Criteria
 
